@@ -1,0 +1,16 @@
+[
+{
+  "modid": "raincontrol",
+  "name": "Rain Control",
+  "description": "A mod that adds a block that toggles rain.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Timotheteus"],
+  "credits": "VSWE, for teaching me modding a few years ago with his youtube videos",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
