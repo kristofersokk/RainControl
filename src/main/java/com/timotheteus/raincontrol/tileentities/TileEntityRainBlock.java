@@ -99,7 +99,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
     public boolean prevRedstone = false;
 
     public static final int maxStorage = 10000000;
-    public static final int maxInput = 10000;
+    public static final int maxInput = 20000;
     public int prevEnergy = 0;
     protected int energy = 0;
     protected int cooldown = 0;
