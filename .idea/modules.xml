@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RainControl.iml" filepath="$PROJECT_DIR$/RainControl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RainControl_api.iml" filepath="$PROJECT_DIR$/.idea/modules/RainControl_api.iml" group="RainControl" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RainControl_main.iml" filepath="$PROJECT_DIR$/.idea/modules/RainControl_main.iml" group="RainControl" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RainControl_test.iml" filepath="$PROJECT_DIR$/.idea/modules/RainControl_test.iml" group="RainControl" />
+    </modules>
+  </component>
+</project>

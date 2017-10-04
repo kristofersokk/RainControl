@@ -6,7 +6,7 @@ This mapping 'snapshot_20170825' was designed for MC 1.12! Use at your own peril
 :deobfCompileDummyTask
 :deobfProvidedDummyTask
 :getVersionJson
-:extractUserdev UP-TO-DATE
+:extractUserdev
 :extractDependencyATs SKIPPED
 :extractMcpData SKIPPED
 :genSrgs SKIPPED
@@ -16,24 +16,24 @@ This mapping 'snapshot_20170825' was designed for MC 1.12! Use at your own peril
 :mergeJars SKIPPED
 :deobfMcSRG SKIPPED
 :decompileMc SKIPPED
-:fixMcSources
+:fixMcSources SKIPPED
 :applySourcePatches
 :remapMcSources SKIPPED
 :recompileMc SKIPPED
 :extractNatives SKIPPED
 :getAssetIndex UP-TO-DATE
 :getAssets
-Current status: 174/1281   13%
-Current status: 353/1281   27%
-Current status: 576/1281   44%
-Current status: 716/1281   55%
-Current status: 841/1281   65%
-Current status: 955/1281   74%
-Current status: 1089/1281   85%
-Current status: 1252/1281   97%
+Current status: 158/1281   12%
+Current status: 310/1281   24%
+Current status: 465/1281   36%
+Current status: 596/1281   46%
+Current status: 672/1281   52%
+Current status: 860/1281   67%
+Current status: 975/1281   76%
+Current status: 1130/1281   88%
 :makeStart
 :setupDecompWorkspace
 
 BUILD SUCCESSFUL
 
-Total time: 1 mins 27.546 secs
+Total time: 1 mins 33.656 secs

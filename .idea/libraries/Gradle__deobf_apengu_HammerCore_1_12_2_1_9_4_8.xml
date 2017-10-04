@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: deobf.apengu:HammerCore:1.12.2-1.9.4.8">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/minecraft/deobfedDeps/deobf/apengu/HammerCore/1.12.2-1.9.4.8/HammerCore-1.12.2-1.9.4.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/minecraft/deobfedDeps/deobf/apengu/HammerCore/1.12.2-1.9.4.8/HammerCore-1.12.2-1.9.4.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
