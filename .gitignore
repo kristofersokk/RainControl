@@ -1,7 +1,7 @@
-.gradle
+#.gradle
 AstralSorcery-master
 build
-gradle
+#gradle
 ironchest-1.11
 ModTutorials-1.12
 out
