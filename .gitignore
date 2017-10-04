@@ -7,6 +7,7 @@ ModTutorials-1.12
 out
 run
 SolarFluxReborn-1.12
+/.gradle
 #.gitignore
 #build.gradle
 #build.txt

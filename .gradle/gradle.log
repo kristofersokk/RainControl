@@ -1,39 +1,7 @@
 This mapping 'snapshot_20170825' was designed for MC 1.12! Use at your own peril.This mapping 'snapshot_20170825' was designed for MC 1.12! Use at your own peril.
 
-:extractMcpMappings SKIPPED
-:deobfCompileDeobfDepTask0 SKIPPED
-:deobfCompileRemapDepSourcesTask1 SKIPPED
-:deobfCompileDummyTask
-:deobfProvidedDummyTask
-:getVersionJson
-:extractUserdev
-:extractDependencyATs SKIPPED
-:extractMcpData SKIPPED
-:genSrgs SKIPPED
-:downloadClient SKIPPED
-:downloadServer SKIPPED
-:splitServerJar SKIPPED
-:mergeJars SKIPPED
-:deobfMcSRG SKIPPED
-:decompileMc SKIPPED
-:fixMcSources SKIPPED
-:applySourcePatches
-:remapMcSources SKIPPED
-:recompileMc SKIPPED
-:extractNatives SKIPPED
-:getAssetIndex UP-TO-DATE
-:getAssets
-Current status: 158/1281   12%
-Current status: 310/1281   24%
-Current status: 465/1281   36%
-Current status: 596/1281   46%
-Current status: 672/1281   52%
-Current status: 860/1281   67%
-Current status: 975/1281   76%
-Current status: 1130/1281   88%
-:makeStart
-:setupDecompWorkspace
+:genIntellijRuns
 
 BUILD SUCCESSFUL
 
-Total time: 1 mins 33.656 secs
+Total time: 3.574 secs
