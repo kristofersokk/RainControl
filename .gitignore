@@ -1,0 +1,18 @@
+.gradle
+AstralSorcery-master
+build
+gradle
+ironchest-1.11
+ModTutorials-1.12
+out
+run
+SolarFluxReborn-1.12
+#.gitignore
+#build.gradle
+#build.txt
+#gradle.properties
+#gradlew
+#gradlew.bat
+#Minecraft Modding.ipr
+#Minecraft Modding.iws
+#Minecraft_Modding.iml
