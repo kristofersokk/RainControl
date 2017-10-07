@@ -1,8 +1,10 @@
 package com.timotheteus.raincontrol.proxy;
 
+import com.pengu.hammercore.core.init.ItemsHC;
 import com.timotheteus.raincontrol.block.BlockRain;
 import com.timotheteus.raincontrol.block.Blocks;
 import com.timotheteus.raincontrol.handlers.PacketHandler;
+import com.timotheteus.raincontrol.items.itemblocks.ItemRainBlock;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.block.Block;
@@ -34,13 +36,14 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event){
-        event.getRegistry().register(new BlockRain());
+        event.getRegistry().register(Blocks.blockRain);
         GameRegistry.registerTileEntity(TileEntityRainBlock.class, ModUtil.MOD_ID + "_rainblock");
 
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event){
-        event.getRegistry().register(new ItemBlock(Blocks.blockRain).setRegistryName(Blocks.blockRain.getRegistryName()));
+        event.getRegistry().register(Blocks.blockRain_item);
+        ItemsHC.items.add(Blocks.blockRain_item);
     }
 }

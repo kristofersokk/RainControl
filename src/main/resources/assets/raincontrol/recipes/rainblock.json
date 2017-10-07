@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "raincontrol:rainblock"
+    "block": "raincontrol:rainblock"
   },
   "pattern": [
     "ses",
