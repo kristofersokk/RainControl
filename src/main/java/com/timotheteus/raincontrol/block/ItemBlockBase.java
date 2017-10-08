@@ -2,19 +2,18 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemBlock;
 
-public class BlockBase extends Block {
+public class ItemBlockBase extends ItemBlock {
 
-    public BlockBase(Material blockMaterialIn, String id) {
-        super(blockMaterialIn, MapColor.GRAY);
+    private String id;
+
+    public ItemBlockBase(Block block, String id) {
+        super(block);
         this.setUnlocalizedName(ModUtil.MOD_ID + "." + id);
         this.setRegistryName(id);
         this.id = id;
     }
-
-    private String id;
 
     public String getModelName() {
         return ModUtil.MOD_ID + ":" + id;

@@ -22,16 +22,21 @@ import java.util.ArrayList;
 
 public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, iPowerStorage, ITickable {
 
+    private static final int cooldownLength = 100;
+
+
+    private int timer = 0;
+
     public void activated(@Nullable EntityPlayer player, boolean shiftKeyDown){
         try {
             World world = player.getEntityWorld();
             if (!world.isRemote) {
                 if (!shiftKeyDown){
-                    player.sendStatusMessage(new TextComponentString("Energy: " + Integer.toString(energy)), false);
+                    player.sendStatusMessage(new TextComponentString("Energy: " + ChatHelper.getFormattedInt(energy) + " FE"), false);
                 }else if (cooldown == 0){
                     if (energy >= 1000000){
                         changeEnergy(-1000000);
-                        cooldown = 80;
+                        cooldown = cooldownLength;
                         if (world.getWorldInfo().isRaining()){
                             world.getWorldInfo().setRaining(false);
                             ChatHelper.chatMessageServer(player, "Stopping rain");
@@ -40,7 +45,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
                             ChatHelper.chatMessageServer(player, "Starting rain");
                         }
                     }else{
-                        ChatHelper.chatMessageServer(player, "Not enough energy. Energy: " + Integer.toString(energy));
+                        ChatHelper.chatMessageServer(player, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
                         cooldown = 20;
                     }
                 }
@@ -49,10 +54,10 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
             //redstone activation
             if (!world.isRemote) {
                 if (cooldown == 0){
-                    ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 7, WorldHelper.Shape.ROUND);
+                    ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 5, WorldHelper.Shape.ROUND);
                     if (energy >= 1000000){
                         changeEnergy(-1000000);
-                        cooldown = 80;
+                        cooldown = cooldownLength;
                         if (world.getWorldInfo().isRaining()){
                             world.getWorldInfo().setRaining(false);
                             ChatHelper.chatMessageServer(players, "Stopping rain");
@@ -61,7 +66,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
                             ChatHelper.chatMessageServer(players, "Starting rain");
                         }
                     }else{
-                        ChatHelper.chatMessageServer(players, "Not enough energy. Energy: " + Integer.toString(energy));
+                        ChatHelper.chatMessageServer(players, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
                         cooldown = 20;
                     }
                 }
@@ -69,12 +74,15 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
         }
     }
 
+    public boolean redstone = false;
+    public boolean prevRedstone = false;
 
-    private int timer = 0;
+    public static final int maxStorage = 10000000;
+    public static final int maxInput = 20000;
 
     @Override
     public void update() {
-
+        //server
         if (!world.isRemote){
             timer++;
 
@@ -95,14 +103,10 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
             }
         }
     }
-    public boolean redstone = false;
-    public boolean prevRedstone = false;
-
-    public static final int maxStorage = 10000000;
-    public static final int maxInput = 20000;
     public int prevEnergy = 0;
     protected int energy = 0;
     protected int cooldown = 0;
+
 
     //Forge Energy
 

@@ -1,6 +1,6 @@
 {
   "result": {
-    "block": "raincontrol:rainblock"
+    "item": "raincontrol:rainblock"
   },
   "pattern": [
     "ses",
@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "b": {
-      "block": "minecraft:iron_block"
+      "item": "minecraft:iron_block"
     },
     "r": {
       "item": "minecraft:redstone"

@@ -1,30 +1,24 @@
 package com.timotheteus.raincontrol.block;
 
-import com.timotheteus.raincontrol.items.itemblocks.ItemRainBlock;
+import com.timotheteus.raincontrol.items.Items;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
-import com.timotheteus.raincontrol.util.ModUtil;
 import com.timotheteus.raincontrol.util.Names;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFlowerPot;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
@@ -35,17 +29,10 @@ public class BlockRain extends BlockBase implements ITileEntityProvider{
 	public BlockRain() {
 		super(Material.IRON, Names.BLOCK_RAIN);
 		this.setHardness(1.5F)
-        .setRegistryName(this.getNameinRegistry())
         .setResistance(10f)
-        .setUnlocalizedName(ModUtil.MOD_ID + "." + this.getNameinRegistry())
         .setCreativeTab(CreativeTabs.MISC);
 		this.setSoundType(SoundType.METAL);
 	}
-
-	@SideOnly(Side.CLIENT)
-    public void initModel(){
-        ModelLoader.setCustomModelResourceLocation(new ItemRainBlock(new BlockRain()), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-    }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
@@ -61,17 +48,20 @@ public class BlockRain extends BlockBase implements ITileEntityProvider{
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return Blocks.blockRain_item;
+        return Items.blockRain_item;
     }
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         TileEntityRainBlock te = world.getTileEntity(pos) instanceof TileEntityRainBlock ? (TileEntityRainBlock) world.getTileEntity(pos) : null;
         if (te != null) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("energy", te.getEnergyStored());
-            ItemStack stack = new ItemStack(Blocks.blockRain_item);
-            stack.setTagCompound(nbt);
+            int energy = te.getEnergyStored();
+            ItemStack stack = new ItemStack(Items.blockRain_item);
+            if (energy > 0) {
+                NBTTagCompound nbt = new NBTTagCompound();
+                nbt.setInteger("energy", energy);
+                stack.setTagCompound(nbt);
+            }
             drops.add(stack);
         }
     }

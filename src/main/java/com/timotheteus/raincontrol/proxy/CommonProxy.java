@@ -1,22 +1,16 @@
 package com.timotheteus.raincontrol.proxy;
 
-import com.pengu.hammercore.core.init.ItemsHC;
-import com.timotheteus.raincontrol.block.BlockRain;
 import com.timotheteus.raincontrol.block.Blocks;
 import com.timotheteus.raincontrol.handlers.PacketHandler;
-import com.timotheteus.raincontrol.items.itemblocks.ItemRainBlock;
-import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
-import com.timotheteus.raincontrol.util.ModUtil;
+import com.timotheteus.raincontrol.items.Items;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod.EventBusSubscriber
 public class CommonProxy {
@@ -36,14 +30,11 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event){
-        event.getRegistry().register(Blocks.blockRain);
-        GameRegistry.registerTileEntity(TileEntityRainBlock.class, ModUtil.MOD_ID + "_rainblock");
-
+        Blocks.init(event);
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event){
-        event.getRegistry().register(Blocks.blockRain_item);
-        ItemsHC.items.add(Blocks.blockRain_item);
+        Items.init(event);
     }
 }

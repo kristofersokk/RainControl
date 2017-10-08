@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "raincontrol:block/block",
+    "textures": {
+      "all": "raincontrol:common/unknown"
+    },
+    "variants": {
+      "normal": [
+        {}
+      ],
+      "inventory": [
+        {}
+      ]
+    }
+  }
+}

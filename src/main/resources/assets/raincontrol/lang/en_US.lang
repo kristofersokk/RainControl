@@ -1,2 +1,2 @@
-﻿< en_US.lang - English localization file for the Rain Control mod >
-tile.raincontrol.rainblock.name=Humidity regulator
+#blocks
+tile.raincontrol.rainblock.name=Rain Controller

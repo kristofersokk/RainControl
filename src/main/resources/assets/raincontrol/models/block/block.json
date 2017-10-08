@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube_all",
+  "defaults": {
+    "variants": {
+      "normal": [
+        {}
+      ],
+      "inventory": [
+        {}
+      ]
+    }
+  }
+}
