@@ -8,11 +8,11 @@ public class ItemBlockBase extends ItemBlock {
 
     private String id;
 
-    public ItemBlockBase(Block block, String id) {
+    public ItemBlockBase(Block block) {
         super(block);
+        this.id = ((BlockBase) block).id;
         this.setUnlocalizedName(ModUtil.MOD_ID + "." + id);
         this.setRegistryName(id);
-        this.id = id;
     }
 
     public String getModelName() {

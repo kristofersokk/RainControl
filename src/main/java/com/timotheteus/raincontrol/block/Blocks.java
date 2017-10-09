@@ -1,7 +1,7 @@
 package com.timotheteus.raincontrol.block;
 
+import com.timotheteus.raincontrol.tileentities.TileEntityFurnaceBlock;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
-import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -14,16 +14,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Blocks {
 
     public static BlockRain blockRain;
+    public static BlockFurnace blockFurnace;
 
     public static void init(RegistryEvent.Register<Block> event) {
         blockRain = new BlockRain();
-        event.getRegistry().register(blockRain);
-        GameRegistry.registerTileEntity(TileEntityRainBlock.class, ModUtil.MOD_ID + "_rainblock");
+        blockFurnace = new BlockFurnace();
+
+        GameRegistry.registerTileEntity(TileEntityRainBlock.class, blockRain.getTileEntityName());
+        GameRegistry.registerTileEntity(TileEntityFurnaceBlock.class, blockFurnace.getTileEntityName());
+
+        event.getRegistry().registerAll(
+                blockRain,
+                blockFurnace
+        );
     }
 
     @SideOnly(Side.CLIENT)
     public static void initModels(){
         registerBlockModel(blockRain);
+        registerBlockModel(blockFurnace);
     }
 
     public static void registerBlockModel(BlockBase block) {

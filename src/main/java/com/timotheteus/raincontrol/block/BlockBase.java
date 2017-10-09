@@ -14,10 +14,14 @@ public class BlockBase extends Block {
         this.id = id;
     }
 
-    private String id;
+    public String id;
 
     public String getModelName() {
         return ModUtil.MOD_ID + ":" + id;
+    }
+
+    public String getTileEntityName() {
+        return ModUtil.MOD_ID + "_" + id;
     }
 
 }

@@ -19,11 +19,11 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, iPowerStorage, ITickable {
 
     private static final int cooldownLength = 100;
-
 
     private int timer = 0;
 
@@ -166,10 +166,15 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
         return super.writeToNBT(compound);
     }
 
+    Capability[] capabilities = new Capability[]{
+            CapabilityEnergy.ENERGY,
+            CapabilityEJ.ENERGY
+    };
+
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing)
     {
-        if (capability == CapabilityEnergy.ENERGY || capability == CapabilityEJ.ENERGY)
+        if (Arrays.asList(capabilities).contains(capability))
             return true;
         return super.hasCapability(capability, facing);
     }
@@ -177,7 +182,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        if (capability == CapabilityEnergy.ENERGY || capability == CapabilityEJ.ENERGY)
+        if (Arrays.asList(capabilities).contains(capability))
             return (T) this;
         return super.getCapability(capability, facing);
     }

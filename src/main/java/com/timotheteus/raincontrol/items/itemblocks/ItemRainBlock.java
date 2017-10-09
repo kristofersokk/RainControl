@@ -3,7 +3,6 @@ package com.timotheteus.raincontrol.items.itemblocks;
 import com.timotheteus.raincontrol.block.ItemBlockBase;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
 import com.timotheteus.raincontrol.util.ChatHelper;
-import com.timotheteus.raincontrol.util.Names;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,10 +17,8 @@ import java.util.List;
 
 public class ItemRainBlock extends ItemBlockBase {
 
-    public final String registryName = Names.BLOCK_RAIN;
-
     public ItemRainBlock(Block block) {
-        super(block, Names.BLOCK_RAIN);
+        super(block);
     }
 
     @Override

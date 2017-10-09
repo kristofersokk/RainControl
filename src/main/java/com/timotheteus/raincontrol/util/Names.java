@@ -6,6 +6,8 @@ public class Names {
 
     //blocks
     public static final String BLOCK_RAIN = "rainblock";
+    public static final String BLOCK_FURNACE = "furnaceblock";
+
 
     //items
 
