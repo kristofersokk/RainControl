@@ -11,7 +11,7 @@ public class FurnaceContainerGui extends GuiContainer {
     public static final int WIDTH = 180;
     public static final int HEIGHT = 152;
 
-    private static final ResourceLocation background = new ResourceLocation(ModUtil.MOD_ID, "textures/gui/testcontainer.png");
+    private static final ResourceLocation background = new ResourceLocation(ModUtil.MOD_ID, "textures/gui/furnace/background.png");
 
     public FurnaceContainerGui(TileEntityFurnaceBlock tileEntity, ContainerFurnace container) {
         super(container);

@@ -43,8 +43,8 @@ public class ContainerFurnace extends Container {
 
     private void addOwnSlots() {
         IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        int x = 9;
-        int y = 6;
+        int x = 81;
+        int y = 37;
 
         // Add our own slots
         int slotIndex = 0;
