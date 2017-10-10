@@ -30,7 +30,6 @@ public class BlockFurnace extends BlockBase implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        //TODO add gui handler, itemstack capabilities, stacks nbt saving etc
         if (worldIn.isRemote) {
             return true;
         }
