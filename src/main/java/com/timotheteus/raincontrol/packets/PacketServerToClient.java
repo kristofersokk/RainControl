@@ -21,14 +21,15 @@ public class PacketServerToClient implements IMessage {
     private int dimensionID;
     private int energy;
     private int burnTime;
+    private int maxBurnTime;
 
     /**
      * Required objects are in the PacketTypes descriptions.
      * Put the objects in the order of the packet types
      *
-     * @param te      tile entity
-     * @param types
-     * @param objects
+     * @param te tile entity
+     * @param types different server packet types
+     * @param objects objects in the right order for the packets
      */
     public PacketServerToClient(TileEntity te, PacketTypes.SERVER[] types, Object... objects) {
         this.types = types;
@@ -43,7 +44,8 @@ public class PacketServerToClient implements IMessage {
                     continue;
                 case BURN_TIME:
                     burnTime = (int) objects[index];
-                    index += 1;
+                    burnTime = (int) objects[index+1];
+                    index += 2;
                     continue;
             }
         }
@@ -85,6 +87,7 @@ public class PacketServerToClient implements IMessage {
                     continue;
                 case BURN_TIME:
                     burnTime = buf.readInt();
+                    maxBurnTime = buf.readInt();
                     continue;
             }
         }
@@ -105,6 +108,7 @@ public class PacketServerToClient implements IMessage {
                     continue;
                 case BURN_TIME:
                     buf.writeInt(burnTime);
+                    buf.writeInt(maxBurnTime);
                     continue;
             }
 
@@ -138,7 +142,10 @@ public class PacketServerToClient implements IMessage {
                             continue;
                         case BURN_TIME:
                             Syncable.BurnTime handlerBurnTime = ((Syncable.BurnTime) te);
-                            Minecraft.getMinecraft().addScheduledTask(() -> handlerBurnTime.setBurnTime(message.burnTime, false));
+                            Minecraft.getMinecraft().addScheduledTask(() -> {
+                                handlerBurnTime.setBurnTime(message.burnTime, false);
+                                handlerBurnTime.setMaxBurnTime(message.maxBurnTime, false);
+                            });
                             continue;
                     }
                 }

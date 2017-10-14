@@ -40,7 +40,7 @@ public class ItemRainBlock extends ItemBlockBase {
             try{
                 int energy = stack.getTagCompound().getInteger("energy");
                 TileEntityRainBlock te = (TileEntityRainBlock) world.getTileEntity(pos);
-                te.setEnergy(energy);
+                te.setEnergy(energy, true);
             }catch (Exception e){}
         }
 

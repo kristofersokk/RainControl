@@ -18,6 +18,8 @@ public class Syncable {
     public interface BurnTime {
 
         void setBurnTime(int a, boolean sync);
+
+        void setMaxBurnTime(int a, boolean sync);
     }
 
 }

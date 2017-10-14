@@ -26,7 +26,7 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
     public static final int maxStorage = 100000;
     public static final int maxOutput = 2000;
     public static final int PRODUCE = 40;
-    static final Capability[] capabilities = new Capability[]{
+    private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityEJ.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
@@ -40,6 +40,7 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
     };
 
     private int energy;
+    private int maxBurnTimeLeft;
     private int burnTimeLeft;
 
     @Override
@@ -60,6 +61,7 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
                 if (newBurnTime > 0) {
                     if (itemStackHandler.modifyStack(0, -1)) {
                         setBurnTime(newBurnTime, false);
+                        setMaxBurnTime(newBurnTime, false);
                         sync = true;
                     }
                 }
@@ -174,6 +176,12 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
         markDirty(sync);
     }
 
+    @Override
+    public void setMaxBurnTime(int a, boolean sync) {
+        maxBurnTimeLeft = a;
+        markDirty(sync);
+    }
+
     public void markDirty(boolean sync) {
         super.markDirty();
         if (sync) {
@@ -181,6 +189,7 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
                     this,
                     new PacketTypes.SERVER[]{PacketTypes.SERVER.BURN_TIME, PacketTypes.SERVER.ENERGY},
                     burnTimeLeft,
+                    maxBurnTimeLeft,
                     getEnergyStored()
             )
                     .sendToDimension();
