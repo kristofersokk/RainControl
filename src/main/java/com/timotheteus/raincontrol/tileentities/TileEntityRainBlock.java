@@ -2,8 +2,9 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
-import com.timotheteus.raincontrol.handlers.PacketHandler;
-import com.timotheteus.raincontrol.packets.PacketEnergyChange;
+import com.timotheteus.raincontrol.block.Syncable;
+import com.timotheteus.raincontrol.packets.PacketServerToClient;
+import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.util.ChatHelper;
 import com.timotheteus.raincontrol.util.WorldHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,11 +22,22 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, iPowerStorage, ITickable {
+public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, Syncable.Energy, iPowerStorage, ITickable {
 
     private static final int cooldownLength = 100;
 
     private int timer = 0;
+
+    private static final int maxStorage = 10000000;
+    private static final int maxInput = 20000;
+    private boolean redstone = false;
+    private int prevEnergy = 0;
+    private int energy = 0;
+    private int cooldown = 0;
+    private Capability[] capabilities = new Capability[]{
+            CapabilityEnergy.ENERGY,
+            CapabilityEJ.ENERGY
+    };
 
     public void activated(@Nullable EntityPlayer player, boolean shiftKeyDown){
         try {
@@ -35,7 +47,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
                     player.sendStatusMessage(new TextComponentString("Energy: " + ChatHelper.getFormattedInt(energy) + " FE"), false);
                 }else if (cooldown == 0){
                     if (energy >= 1000000){
-                        changeEnergy(-1000000);
+                        changeEnergy(-1000000, true);
                         cooldown = cooldownLength;
                         if (world.getWorldInfo().isRaining()){
                             world.getWorldInfo().setRaining(false);
@@ -56,7 +68,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
                 if (cooldown == 0){
                     ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 5, WorldHelper.Shape.ROUND);
                     if (energy >= 1000000){
-                        changeEnergy(-1000000);
+                        changeEnergy(-1000000, true);
                         cooldown = cooldownLength;
                         if (world.getWorldInfo().isRaining()){
                             world.getWorldInfo().setRaining(false);
@@ -74,11 +86,8 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
         }
     }
 
-    public boolean redstone = false;
-    public boolean prevRedstone = false;
 
-    public static final int maxStorage = 10000000;
-    public static final int maxInput = 20000;
+    //Forge Energy
 
     @Override
     public void update() {
@@ -86,7 +95,7 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
         if (!world.isRemote){
             timer++;
 
-            prevRedstone = redstone;
+            boolean prevRedstone = redstone;
             redstone = getWorld().isBlockPowered(this.pos);
             if (!prevRedstone && redstone)
                 activated(null, false);
@@ -94,39 +103,35 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
             if (cooldown > 0)
                 cooldown--;
 
-            if (timer >= 4){
+            if (timer >= 2) {
                 if (prevEnergy != energy){
-                    PacketHandler.INSTANCE.sendToDimension(new PacketEnergyChange(this.pos, getEnergyStored()),world.provider.getDimension());
+                    new PacketServerToClient(this, new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY}, getEnergyStored());
                     prevEnergy = energy;
                 }
                 timer = 0;
             }
         }
     }
-    public int prevEnergy = 0;
-    protected int energy = 0;
-    protected int cooldown = 0;
 
-
-    //Forge Energy
-
-    public void changeEnergy(int a){
-        energy += a;
-        markDirty();
-    }
-
-    public void setEnergy(int a){
-        energy = a;
-        markDirty();
+    @Override
+    public void setEnergy(int energy, boolean sync) {
+        this.energy = energy;
+        markDirty(sync);
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        int received = Math.min(maxInput, Math.min(maxStorage - energy, maxReceive));
-        if (!simulate){
-            changeEnergy(received);
+    public boolean changeEnergy(int a, boolean sync) {
+        int prevEnergy = energy;
+        energy += a;
+        if (energy < 0)
+            energy = 0;
+        if (energy > maxStorage)
+            energy = maxStorage;
+        if (prevEnergy != energy) {
+            markDirty(sync);
+            return true;
         }
-        return received;
+        return false;
     }
 
     @Override
@@ -166,10 +171,14 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
         return super.writeToNBT(compound);
     }
 
-    Capability[] capabilities = new Capability[]{
-            CapabilityEnergy.ENERGY,
-            CapabilityEJ.ENERGY
-    };
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        int received = Math.min(maxInput, Math.min(maxStorage - energy, maxReceive));
+        if (!simulate) {
+            changeEnergy(received, true);
+        }
+        return received;
+    }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing)
@@ -187,5 +196,16 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, i
         return super.getCapability(capability, facing);
     }
 
+    public void markDirty(boolean sync) {
+        super.markDirty();
+        if (sync) {
+            new PacketServerToClient(
+                    this,
+                    new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY},
+                    getEnergyStored()
+            )
+                    .sendToDimension();
+        }
+    }
 
 }

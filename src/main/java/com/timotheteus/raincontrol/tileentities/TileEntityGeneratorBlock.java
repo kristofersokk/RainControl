@@ -2,45 +2,81 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
+import com.timotheteus.raincontrol.block.Syncable;
+import com.timotheteus.raincontrol.packets.PacketServerToClient;
+import com.timotheteus.raincontrol.packets.PacketTypes;
+import com.timotheteus.raincontrol.util.CustomItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Arrays;
 
-public class TileEntityFurnaceBlock extends TileEntity implements IEnergyStorage, iPowerStorage, ITickable {
+public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStorage, Syncable.Energy, Syncable.BurnTime, iPowerStorage, ITickable {
 
     public static final int SIZE = 1;
     public static final int maxStorage = 100000;
     public static final int maxOutput = 2000;
-    Capability[] capabilities = new Capability[]{
+    public static final int PRODUCE = 40;
+    static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityEJ.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
-    private ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE) {
+
+    private CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(SIZE) {
         @Override
         protected void onContentsChanged(int slot) {
             markDirty();
         }
     };
-    private int energy = 0;
+
+    private int energy;
+    private int burnTimeLeft;
 
     @Override
     public void update() {
+
+        boolean sync = false;
+
+        if (!world.isRemote) {
+            //burning
+            if (burnTimeLeft > 0) {
+                burnTimeLeft--;
+                if (changeEnergy(PRODUCE, false))
+                    sync = true;
+            } else {
+                //not burning
+                ItemStack stack = itemStackHandler.getStackInSlot(0);
+                int newBurnTime = TileEntityFurnace.getItemBurnTime(stack);
+                if (newBurnTime > 0) {
+                    if (itemStackHandler.modifyStack(0, -1)) {
+                        setBurnTime(newBurnTime, false);
+                        sync = true;
+                    }
+                }
+            }
+
+            //TODO add energy distribution logic
+
+            if (sync)
+                markDirty(true);
+        }
 
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         energy = compound.getInteger("energy");
+        burnTimeLeft = compound.getInteger("burnTime");
         if (compound.hasKey("items")) {
             itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
         }
@@ -50,6 +86,7 @@ public class TileEntityFurnaceBlock extends TileEntity implements IEnergyStorage
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setInteger("energy", energy);
+        compound.setInteger("burnTime", burnTimeLeft);
         compound.setTag("items", itemStackHandler.serializeNBT());
         return super.writeToNBT(compound);
     }
@@ -85,7 +122,7 @@ public class TileEntityFurnaceBlock extends TileEntity implements IEnergyStorage
     public int extractEnergy(int maxExtract, boolean simulate) {
         int extracted = Math.min(maxExtract, Math.min(maxOutput, energy));
         if (!simulate) {
-            changeEnergy(-extracted);
+            changeEnergy(-extracted, true);
         }
         return extracted;
     }
@@ -110,17 +147,43 @@ public class TileEntityFurnaceBlock extends TileEntity implements IEnergyStorage
         return false;
     }
 
-    public int getEnergy() {
-        return energy;
-    }
-
-    public void setEnergy(int energy) {
+    @Override
+    public void setEnergy(int energy, boolean sync) {
         this.energy = energy;
-        markDirty();
+        markDirty(sync);
     }
 
-    public void changeEnergy(int energy) {
-        this.energy += energy;
-        markDirty();
+    @Override
+    public boolean changeEnergy(int a, boolean sync) {
+        int prevEnergy = energy;
+        energy += a;
+        if (energy < 0)
+            energy = 0;
+        if (energy > maxStorage)
+            energy = maxStorage;
+        if (prevEnergy != energy) {
+            markDirty(sync);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setBurnTime(int a, boolean sync) {
+        burnTimeLeft = a;
+        markDirty(sync);
+    }
+
+    public void markDirty(boolean sync) {
+        super.markDirty();
+        if (sync) {
+            new PacketServerToClient(
+                    this,
+                    new PacketTypes.SERVER[]{PacketTypes.SERVER.BURN_TIME, PacketTypes.SERVER.ENERGY},
+                    burnTimeLeft,
+                    getEnergyStored()
+            )
+                    .sendToDimension();
+        }
     }
 }

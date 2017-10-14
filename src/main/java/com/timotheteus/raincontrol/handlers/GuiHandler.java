@@ -1,8 +1,8 @@
 package com.timotheteus.raincontrol.handlers;
 
-import com.timotheteus.raincontrol.gui.FurnaceContainerGui;
-import com.timotheteus.raincontrol.gui.container.ContainerFurnace;
-import com.timotheteus.raincontrol.tileentities.TileEntityFurnaceBlock;
+import com.timotheteus.raincontrol.gui.GeneratorContainerGui;
+import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
+import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,7 @@ public class GuiHandler implements IGuiHandler{
         TileEntity te = world.getTileEntity(pos);
         switch (ID) {
             case GUY_FURNACEBLOCK:
-                return new ContainerFurnace(player.inventory, (TileEntityFurnaceBlock) te);
+                return new ContainerGenerator(player.inventory, (TileEntityGeneratorBlock) te);
         }
 
         return null;
@@ -39,8 +39,8 @@ public class GuiHandler implements IGuiHandler{
         TileEntity te = world.getTileEntity(pos);
         switch (ID) {
             case GUY_FURNACEBLOCK:
-                TileEntityFurnaceBlock containerTE = (TileEntityFurnaceBlock) te;
-                return new FurnaceContainerGui(containerTE, new ContainerFurnace(player.inventory, containerTE));
+                TileEntityGeneratorBlock containerTE = (TileEntityGeneratorBlock) te;
+                return new GeneratorContainerGui(containerTE, new ContainerGenerator(player.inventory, containerTE));
         }
 
         return null;

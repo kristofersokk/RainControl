@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.items;
 
-import com.timotheteus.raincontrol.block.BlockFurnace;
+import com.timotheteus.raincontrol.block.BlockGenerator;
 import com.timotheteus.raincontrol.block.BlockRain;
 import com.timotheteus.raincontrol.block.Blocks;
 import com.timotheteus.raincontrol.block.ItemBlockBase;
@@ -19,7 +19,7 @@ public class Items {
 
     public static void init(RegistryEvent.Register<Item> event) {
         blockRain_item = new ItemRainBlock(Blocks.blockRain);
-        blockFurnace_item = new ItemBlockBase(Blocks.blockFurnace);
+        blockFurnace_item = new ItemBlockBase(Blocks.blockGenerator);
 
         event.getRegistry().registerAll(
                 blockRain_item,
@@ -31,7 +31,7 @@ public class Items {
     public static void initModels() {
 //        blockRain.initModel();
         registerItemBlockModel(new ItemRainBlock(new BlockRain()));
-        registerItemBlockModel(new ItemBlockBase(new BlockFurnace()));
+        registerItemBlockModel(new ItemBlockBase(new BlockGenerator()));
     }
 
     private static void registerItemBlockModel(ItemBlockBase item) {

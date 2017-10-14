@@ -2,7 +2,7 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.RainControl;
 import com.timotheteus.raincontrol.handlers.GuiHandler;
-import com.timotheteus.raincontrol.tileentities.TileEntityFurnaceBlock;
+import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.Names;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -18,10 +18,10 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class BlockFurnace extends BlockBase implements ITileEntityProvider {
+public class BlockGenerator extends BlockBase implements ITileEntityProvider {
 
-    public BlockFurnace() {
-        super(Material.IRON, Names.BLOCK_FURNACE);
+    public BlockGenerator() {
+        super(Material.IRON, Names.BLOCK_GENERATOR);
         this.setHardness(1.5F)
                 .setResistance(10f)
                 .setCreativeTab(CreativeTabs.MISC);
@@ -34,7 +34,7 @@ public class BlockFurnace extends BlockBase implements ITileEntityProvider {
             return true;
         }
         TileEntity te = worldIn.getTileEntity(pos);
-        if (!(te instanceof TileEntityFurnaceBlock)) {
+        if (!(te instanceof TileEntityGeneratorBlock)) {
             return false;
         }
         playerIn.openGui(RainControl.instance, GuiHandler.GUY_FURNACEBLOCK, worldIn, pos.getX(), pos.getY(), pos.getZ());
@@ -44,6 +44,6 @@ public class BlockFurnace extends BlockBase implements ITileEntityProvider {
     @Nullable
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityFurnaceBlock();
+        return new TileEntityGeneratorBlock();
     }
 }

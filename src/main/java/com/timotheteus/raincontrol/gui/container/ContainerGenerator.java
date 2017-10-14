@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.gui.container;
 
-import com.timotheteus.raincontrol.tileentities.TileEntityFurnaceBlock;
+import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -12,11 +12,11 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
-public class ContainerFurnace extends Container {
+public class ContainerGenerator extends Container {
 
-    private TileEntityFurnaceBlock te;
+    private TileEntityGeneratorBlock te;
 
-    public ContainerFurnace(IInventory playerInventory, TileEntityFurnaceBlock te) {
+    public ContainerGenerator(IInventory playerInventory, TileEntityGeneratorBlock te) {
         this.te = te;
 
         addOwnSlots();
@@ -66,11 +66,11 @@ public class ContainerFurnace extends Container {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            if (index < TileEntityFurnaceBlock.SIZE) {
-                if (!this.mergeItemStack(itemstack1, TileEntityFurnaceBlock.SIZE, this.inventorySlots.size(), true)) {
+            if (index < TileEntityGeneratorBlock.SIZE) {
+                if (!this.mergeItemStack(itemstack1, TileEntityGeneratorBlock.SIZE, this.inventorySlots.size(), true)) {
                     return null;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, TileEntityFurnaceBlock.SIZE, false)) {
+            } else if (!this.mergeItemStack(itemstack1, 0, TileEntityGeneratorBlock.SIZE, false)) {
                 return null;
             }
 
