@@ -1,6 +1,10 @@
-package com.timotheteus.raincontrol.block;
+package com.timotheteus.raincontrol.tileentities;
 
 public class Syncable {
+
+    public interface Sync {
+        void markDirty(boolean sync);
+    }
 
     public interface Energy {
 
@@ -20,6 +24,10 @@ public class Syncable {
         void setBurnTime(int a, boolean sync);
 
         void setMaxBurnTime(int a, boolean sync);
+
+        int getBurnTime();
+
+        int getMaxBurnTime();
     }
 
 }

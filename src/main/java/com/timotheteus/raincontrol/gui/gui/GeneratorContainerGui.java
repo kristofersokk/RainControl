@@ -1,4 +1,4 @@
-package com.timotheteus.raincontrol.gui;
+package com.timotheteus.raincontrol.gui.gui;
 
 import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
@@ -35,13 +35,19 @@ public class GeneratorContainerGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        int l;
         mc.getTextureManager().bindTexture(inventory);
         drawTexturedModalRect(guiLeft, guiTop + 54, 0, 0, xSize, 87);
 
         mc.getTextureManager().bindTexture(generator);
         drawTexturedModalRect(guiLeft + 52, guiTop, 0, 0, 76, 56);
-        l = getScaled(te.getMaxEnergyStored(), te.getEnergyStored(), 43);
+        int l = getScaled(te.getMaxEnergyStored(), te.getEnergyStored(), 43);
         drawTexturedModalRect(guiLeft + 52 + 60, guiTop + 5 + (43 - l), 52 + 76, 0, 10, l);
+        l = getScaled(te.getMaxBurnTime(), te.getBurnTime(), 72);
+        drawTexturedModalRect(guiLeft + 52 + 2 + (72 - l), guiTop + 56 - 4, 0, 56, l, 4);
+    }
+
+    @Override
+    public void drawHoveringText(String text, int x, int y) {
+        super.drawHoveringText(text, x, y);
     }
 }

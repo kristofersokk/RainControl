@@ -2,16 +2,14 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
-import com.timotheteus.raincontrol.block.Syncable;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
+import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.ChatHelper;
 import com.timotheteus.raincontrol.util.WorldHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, Syncable.Energy, iPowerStorage, ITickable {
+public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, iPowerStorage {
 
     private static final int cooldownLength = 100;
 
@@ -34,10 +32,15 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, S
     private int prevEnergy = 0;
     private int energy = 0;
     private int cooldown = 0;
-    private Capability[] capabilities = new Capability[]{
+    private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityEJ.ENERGY
     };
+    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY};
+
+    public TileEntityRainBlock() {
+        super(new ModuleTypes[]{}, new Object[][]{});
+    }
 
     public void activated(@Nullable EntityPlayer player, boolean shiftKeyDown){
         try {
@@ -86,9 +89,6 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, S
         }
     }
 
-
-    //Forge Energy
-
     @Override
     public void update() {
         //server
@@ -133,6 +133,8 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, S
         }
         return false;
     }
+
+    // Forge Energy
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
@@ -181,11 +183,8 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, S
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-    {
-        if (Arrays.asList(capabilities).contains(capability))
-            return true;
-        return super.hasCapability(capability, facing);
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -196,12 +195,13 @@ public class TileEntityRainBlock extends TileEntity implements IEnergyStorage, S
         return super.getCapability(capability, facing);
     }
 
+    @Override
     public void markDirty(boolean sync) {
         super.markDirty();
         if (sync) {
             new PacketServerToClient(
                     this,
-                    new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY},
+                    packets,
                     getEnergyStored()
             )
                     .sendToDimension();

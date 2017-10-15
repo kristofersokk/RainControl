@@ -2,17 +2,15 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
-import com.timotheteus.raincontrol.block.Syncable;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
+import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.CustomItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -20,17 +18,19 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
 
-public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStorage, Syncable.Energy, Syncable.BurnTime, iPowerStorage, ITickable {
+public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, Syncable.BurnTime, iPowerStorage {
 
     public static final int SIZE = 1;
-    public static final int maxStorage = 100000;
-    public static final int maxOutput = 2000;
-    public static final int PRODUCE = 40;
+    private static final int maxStorage = 100000;
+    private static final int maxOutput = 100;
+    private static final int PRODUCE = 40;
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityEJ.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
+
+    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.BURN_TIME, PacketTypes.SERVER.ENERGY};
 
     private CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(SIZE) {
         @Override
@@ -43,12 +43,20 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
     private int maxBurnTimeLeft;
     private int burnTimeLeft;
 
+    public TileEntityGeneratorBlock() {
+        super(new ModuleTypes[]{
+                ModuleTypes.ENERGY_DISPENSER
+        }, new Object[][]{
+                {maxOutput}
+        });
+    }
+
     @Override
     public void update() {
-
-        boolean sync = false;
-
         if (!world.isRemote) {
+            boolean sync = false;
+            super.update();
+
             //burning
             if (burnTimeLeft > 0) {
                 burnTimeLeft--;
@@ -66,8 +74,6 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
                     }
                 }
             }
-
-            //TODO add energy distribution logic
 
             if (sync)
                 markDirty(true);
@@ -99,9 +105,7 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (Arrays.asList(capabilities).contains(capability))
-            return true;
-        return super.hasCapability(capability, facing);
+        return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -182,12 +186,23 @@ public class TileEntityGeneratorBlock extends TileEntity implements IEnergyStora
         markDirty(sync);
     }
 
+    @Override
+    public int getBurnTime() {
+        return burnTimeLeft;
+    }
+
+    @Override
+    public int getMaxBurnTime() {
+        return maxBurnTimeLeft;
+    }
+
+    @Override
     public void markDirty(boolean sync) {
         super.markDirty();
         if (sync) {
             new PacketServerToClient(
                     this,
-                    new PacketTypes.SERVER[]{PacketTypes.SERVER.BURN_TIME, PacketTypes.SERVER.ENERGY},
+                    packets,
                     burnTimeLeft,
                     maxBurnTimeLeft,
                     getEnergyStored()

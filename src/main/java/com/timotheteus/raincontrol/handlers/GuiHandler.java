@@ -1,7 +1,7 @@
 package com.timotheteus.raincontrol.handlers;
 
-import com.timotheteus.raincontrol.gui.GeneratorContainerGui;
 import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
+import com.timotheteus.raincontrol.gui.gui.GeneratorContainerGui;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

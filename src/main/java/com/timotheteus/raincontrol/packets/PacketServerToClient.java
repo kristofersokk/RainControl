@@ -1,7 +1,7 @@
 package com.timotheteus.raincontrol.packets;
 
-import com.timotheteus.raincontrol.block.Syncable;
 import com.timotheteus.raincontrol.handlers.PacketHandler;
+import com.timotheteus.raincontrol.tileentities.Syncable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
