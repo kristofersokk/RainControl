@@ -30,7 +30,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
 
-    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.BURN_TIME, PacketTypes.SERVER.ENERGY};
+    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY, PacketTypes.SERVER.BURN_TIME};
 
     private CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(SIZE) {
         @Override
@@ -75,8 +75,14 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
                 }
             }
 
-            if (sync)
+            if (sync && atTick(10))
                 markDirty(true);
+
+        } else {
+            if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
+                burnTimeLeft--;
+                changeEnergy(PRODUCE, false);
+            }
         }
 
     }
@@ -203,9 +209,9 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
             new PacketServerToClient(
                     this,
                     packets,
+                    getEnergyStored(),
                     burnTimeLeft,
-                    maxBurnTimeLeft,
-                    getEnergyStored()
+                    maxBurnTimeLeft
             )
                     .sendToDimension();
         }

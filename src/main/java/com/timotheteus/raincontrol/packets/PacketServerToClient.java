@@ -44,7 +44,7 @@ public class PacketServerToClient implements IMessage {
                     continue;
                 case BURN_TIME:
                     burnTime = (int) objects[index];
-                    burnTime = (int) objects[index+1];
+                    maxBurnTime = (int) objects[index + 1];
                     index += 2;
                     continue;
             }

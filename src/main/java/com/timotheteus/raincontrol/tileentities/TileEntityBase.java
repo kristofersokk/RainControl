@@ -10,6 +10,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
 
     private int tick = 0;
     private Module[] modules;
+    private ModuleTypes[] moduleTypes;
 
     TileEntityBase(ModuleTypes[] moduleTypes, Object[][] objects) {
         Module[] modules = new Module[moduleTypes.length];
@@ -22,6 +23,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
             }
         }
         this.modules = modules;
+        this.moduleTypes = moduleTypes;
     }
 
     @Override
