@@ -23,11 +23,9 @@ import java.util.Arrays;
 public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, iPowerStorage {
 
     private static final int cooldownLength = 100;
-
-    private int timer = 0;
-
-    private static final int maxStorage = 10000000;
-    private static final int maxInput = 20000;
+    private static final int maxStorage = 1000000;
+    private static final int maxInput = 2000;
+    private static final int activation = 100000;
     private boolean redstone = false;
     private int prevEnergy = 0;
     private int energy = 0;
@@ -49,8 +47,8 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
                 if (!shiftKeyDown){
                     player.sendStatusMessage(new TextComponentString("Energy: " + ChatHelper.getFormattedInt(energy) + " FE"), false);
                 }else if (cooldown == 0){
-                    if (energy >= 1000000){
-                        changeEnergy(-1000000, true);
+                    if (energy >= activation) {
+                        changeEnergy(-activation, true);
                         cooldown = cooldownLength;
                         if (world.getWorldInfo().isRaining()){
                             world.getWorldInfo().setRaining(false);
@@ -70,8 +68,8 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
             if (!world.isRemote) {
                 if (cooldown == 0){
                     ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 5, WorldHelper.Shape.ROUND);
-                    if (energy >= 1000000){
-                        changeEnergy(-1000000, true);
+                    if (energy >= activation) {
+                        changeEnergy(-activation, true);
                         cooldown = cooldownLength;
                         if (world.getWorldInfo().isRaining()){
                             world.getWorldInfo().setRaining(false);
@@ -93,22 +91,18 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
     public void update() {
         //server
         if (!world.isRemote){
-            timer++;
 
             boolean prevRedstone = redstone;
             redstone = getWorld().isBlockPowered(this.pos);
             if (!prevRedstone && redstone)
                 activated(null, false);
-
             if (cooldown > 0)
                 cooldown--;
-
-            if (timer >= 2) {
+            if (atTick(4)) {
                 if (prevEnergy != energy){
                     new PacketServerToClient(this, new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY}, getEnergyStored());
                     prevEnergy = energy;
                 }
-                timer = 0;
             }
         }
     }

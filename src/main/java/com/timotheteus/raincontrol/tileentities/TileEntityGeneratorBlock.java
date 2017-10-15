@@ -21,8 +21,8 @@ import java.util.Arrays;
 public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, Syncable.BurnTime, iPowerStorage {
 
     public static final int SIZE = 1;
-    private static final int maxStorage = 100000;
-    private static final int maxOutput = 100;
+    private static final int maxStorage = 200000;
+    private static final int maxOutput = 1000;
     private static final int PRODUCE = 40;
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
@@ -75,7 +75,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
                 }
             }
 
-            if (sync && atTick(10))
+            if (sync && atTick(8))
                 markDirty(true);
 
         } else {
@@ -91,6 +91,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
     public void readFromNBT(NBTTagCompound compound) {
         energy = compound.getInteger("energy");
         burnTimeLeft = compound.getInteger("burnTime");
+        maxBurnTimeLeft = compound.getInteger("maxBurnTime");
         if (compound.hasKey("items")) {
             itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
         }
@@ -101,6 +102,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setInteger("energy", energy);
         compound.setInteger("burnTime", burnTimeLeft);
+        compound.setInteger("maxBurnTime", maxBurnTimeLeft);
         compound.setTag("items", itemStackHandler.serializeNBT());
         return super.writeToNBT(compound);
     }

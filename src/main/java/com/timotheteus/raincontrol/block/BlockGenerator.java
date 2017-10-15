@@ -28,6 +28,10 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
         this.setSoundType(SoundType.METAL);
     }
 
+    //TODO add redstone control (easy)
+
+    //TODO add config for produce RF
+
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (worldIn.isRemote) {
