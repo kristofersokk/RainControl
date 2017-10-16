@@ -2,6 +2,7 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
+import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
@@ -18,19 +19,22 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
 
-public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, Syncable.BurnTime, iPowerStorage {
+public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, Syncable.Generator, Syncable.BurnTime, iPowerStorage {
 
     public static final int SIZE = 1;
     private static final int maxStorage = 200000;
     private static final int maxOutput = 1000;
-    private static final int PRODUCE = 40;
+    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{
+            PacketTypes.SERVER.ENERGY,
+            PacketTypes.SERVER.GENERATOR,
+            PacketTypes.SERVER.BURN_TIME
+    };
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityEJ.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
-
-    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY, PacketTypes.SERVER.BURN_TIME};
+    private static int generation;
 
     private CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(SIZE) {
         @Override
@@ -49,6 +53,8 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         }, new Object[][]{
                 {maxOutput}
         });
+        generation = Config.generatorProduce;
+        markDirty(false);
     }
 
     @Override
@@ -60,28 +66,35 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
             //burning
             if (burnTimeLeft > 0) {
                 burnTimeLeft--;
-                if (changeEnergy(PRODUCE, false))
+                if (changeEnergy(generation, false))
                     sync = true;
             } else {
                 //not burning
-                ItemStack stack = itemStackHandler.getStackInSlot(0);
-                int newBurnTime = TileEntityFurnace.getItemBurnTime(stack);
-                if (newBurnTime > 0) {
-                    if (itemStackHandler.modifyStack(0, -1)) {
-                        setBurnTime(newBurnTime, false);
-                        setMaxBurnTime(newBurnTime, false);
-                        sync = true;
+                if (!getWorld().isBlockPowered(getPos())) {
+                    ItemStack stack = itemStackHandler.getStackInSlot(0);
+                    int newBurnTime = TileEntityFurnace.getItemBurnTime(stack);
+                    if (newBurnTime > 0) {
+                        if (itemStackHandler.modifyStack(0, -1)) {
+                            setBurnTime(newBurnTime, false);
+                            setMaxBurnTime(newBurnTime, false);
+                            sync = true;
+                        }
                     }
                 }
+
             }
 
             if (sync && atTick(8))
                 markDirty(true);
 
+            if (atTick(1000)) {
+                //TODO separate generation packet here
+            }
+
         } else {
             if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
                 burnTimeLeft--;
-                changeEnergy(PRODUCE, false);
+                changeEnergy(generation, false);
             }
         }
 
@@ -212,10 +225,17 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
                     this,
                     packets,
                     getEnergyStored(),
+                    generation,
                     burnTimeLeft,
                     maxBurnTimeLeft
             )
                     .sendToDimension();
         }
+    }
+
+    @Override
+    public void setProduce(int a, boolean sync) {
+        generation = a;
+        markDirty(sync);
     }
 }

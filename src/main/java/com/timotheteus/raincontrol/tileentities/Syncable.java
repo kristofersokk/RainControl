@@ -16,7 +16,11 @@ public class Syncable {
          * @return anything changed
          */
         boolean changeEnergy(int a, boolean sync);
+    }
 
+    public interface Generator {
+
+        void setProduce(int a, boolean sync);
     }
 
     public interface BurnTime {

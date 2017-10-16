@@ -12,7 +12,12 @@ public class PacketTypes {
         /**
          * needs BlockPos, int burnTime
          */
-        BURN_TIME();
+        BURN_TIME(),
+
+        /**
+         * needs BlockPos, int FE generation amount
+         */
+        GENERATOR();
 
         SERVER() {
         }

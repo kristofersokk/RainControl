@@ -22,6 +22,7 @@ public class PacketServerToClient implements IMessage {
     private int energy;
     private int burnTime;
     private int maxBurnTime;
+    private int generation;
 
     /**
      * Required objects are in the PacketTypes descriptions.
@@ -29,6 +30,10 @@ public class PacketServerToClient implements IMessage {
      *
      * @param te tile entity
      * @param types different server packet types
+     *              in the order:
+     *              ENERGY,
+     *              GENERATOR,
+     *              BURN_TIME
      * @param objects objects in the right order for the packets
      */
     public PacketServerToClient(TileEntity te, PacketTypes.SERVER[] types, Object... objects) {
@@ -42,11 +47,17 @@ public class PacketServerToClient implements IMessage {
                     energy = (int) objects[index];
                     index += 1;
                     continue;
+                case GENERATOR:
+                    generation = (int) objects[index];
+                    index += 1;
+                    continue;
                 case BURN_TIME:
                     burnTime = (int) objects[index];
                     maxBurnTime = (int) objects[index + 1];
+                    //TODO the burn time and max burn time are somehow switched after adding generator packet
                     index += 2;
                     continue;
+
             }
         }
     }
@@ -85,10 +96,14 @@ public class PacketServerToClient implements IMessage {
                 case ENERGY:
                     energy = buf.readInt();
                     continue;
+                case GENERATOR:
+                    generation = buf.readInt();
+                    continue;
                 case BURN_TIME:
                     burnTime = buf.readInt();
                     maxBurnTime = buf.readInt();
                     continue;
+
             }
         }
     }
@@ -106,10 +121,13 @@ public class PacketServerToClient implements IMessage {
                 case ENERGY:
                     buf.writeInt(energy);
                     continue;
+                case GENERATOR:
+                    buf.writeInt(generation);
                 case BURN_TIME:
                     buf.writeInt(burnTime);
                     buf.writeInt(maxBurnTime);
                     continue;
+
             }
 
         }
@@ -139,6 +157,10 @@ public class PacketServerToClient implements IMessage {
                         case ENERGY:
                             Syncable.Energy handlerEnergy = ((Syncable.Energy) te);
                             Minecraft.getMinecraft().addScheduledTask(() -> handlerEnergy.setEnergy(message.energy, false));
+                            continue;
+                        case GENERATOR:
+                            Syncable.Generator handlerGenerator = ((Syncable.Generator) te);
+                            Minecraft.getMinecraft().addScheduledTask(() -> handlerGenerator.setProduce(message.generation, false));
                             continue;
                         case BURN_TIME:
                             Syncable.BurnTime handlerBurnTime = ((Syncable.BurnTime) te);

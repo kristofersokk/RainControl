@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -28,8 +29,6 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
         this.setSoundType(SoundType.METAL);
     }
 
-    //TODO add redstone control (easy)
-
     //TODO add config for produce RF
 
     @Override
@@ -42,6 +41,11 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
             return false;
         }
         playerIn.openGui(RainControl.instance, GuiHandler.GUY_FURNACEBLOCK, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        return true;
+    }
+
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side) {
         return true;
     }
 

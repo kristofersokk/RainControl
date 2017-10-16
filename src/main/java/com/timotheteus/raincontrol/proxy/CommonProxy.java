@@ -2,11 +2,13 @@ package com.timotheteus.raincontrol.proxy;
 
 import com.timotheteus.raincontrol.RainControl;
 import com.timotheteus.raincontrol.block.Blocks;
+import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.handlers.GuiHandler;
 import com.timotheteus.raincontrol.handlers.PacketHandler;
 import com.timotheteus.raincontrol.items.Items;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -18,9 +20,12 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 @Mod.EventBusSubscriber
 public class CommonProxy {
 
+    public static Configuration config;
 
     public void preInit(FMLPreInitializationEvent event){
         PacketHandler.registerMessages();
+        config = new Configuration(event.getSuggestedConfigurationFile());
+        Config.readConfig();
     }
 
     public void init(FMLInitializationEvent event){
@@ -28,7 +33,8 @@ public class CommonProxy {
     }
 
     public void postInit(FMLPostInitializationEvent event){
-
+        if (config.hasChanged())
+            config.save();
     }
 
     @SubscribeEvent
