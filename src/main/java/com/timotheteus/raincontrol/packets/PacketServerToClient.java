@@ -54,7 +54,6 @@ public class PacketServerToClient implements IMessage {
                 case BURN_TIME:
                     burnTime = (int) objects[index];
                     maxBurnTime = (int) objects[index + 1];
-                    //TODO the burn time and max burn time are somehow switched after adding generator packet
                     index += 2;
                     continue;
 
