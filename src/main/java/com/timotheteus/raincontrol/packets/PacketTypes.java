@@ -9,15 +9,16 @@ public class PacketTypes {
          * needs BlockPos, int energy
          */
         ENERGY(),
-        /**
-         * needs BlockPos, int burnTime
-         */
-        BURN_TIME(),
 
         /**
          * needs BlockPos, int FE generation amount
          */
-        GENERATOR();
+        GENERATOR(),
+
+        /**
+         * needs BlockPos, int burnTime
+         */
+        BURN_TIME();
 
         SERVER() {
         }

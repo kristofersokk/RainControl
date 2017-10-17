@@ -88,7 +88,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
                 markDirty(true);
 
             if (atTick(1000)) {
-                //TODO separate generation packet here
+                //TODO separate generation packet here (new packet type CONFIG?)
             }
 
         } else {
@@ -99,6 +99,10 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         }
 
     }
+
+    //TODO add correct drops
+
+    //TODO add recipe
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
