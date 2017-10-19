@@ -1,37 +1,33 @@
 package com.timotheteus.raincontrol.tileentities;
 
-public class Syncable {
+import com.timotheteus.raincontrol.packets.PacketTypes;
 
-    public interface Sync {
-        void markDirty(boolean sync);
+public interface Syncable {
+
+    /**
+     * @param packet
+     * @param message ENERGY; int
+     *                BURN_TIME; int[]{burntime, maxburntime}
+     * @param sync
+     */
+    void sync(PacketTypes.SERVER packet, Object message, boolean sync);
+
+    void sync(PacketTypes.CONFIG packet, Object message, boolean sync);
+
+    void markDirty(boolean sync);
+
+    interface Energy {
+
+        void setEnergy(int energy, boolean sync);
+
+        boolean changeEnergy(int energy, boolean sync);
     }
 
-    public interface Energy {
+    interface BurnTime {
 
-        void setEnergy(int a, boolean sync);
+        void setBurnTime(int burntime, boolean sync);
 
-        /**
-         * @param a
-         * @param sync
-         * @return anything changed
-         */
-        boolean changeEnergy(int a, boolean sync);
-    }
-
-    public interface Generator {
-
-        void setProduce(int a, boolean sync);
-    }
-
-    public interface BurnTime {
-
-        void setBurnTime(int a, boolean sync);
-
-        void setMaxBurnTime(int a, boolean sync);
-
-        int getBurnTime();
-
-        int getMaxBurnTime();
+        void setMaxBurnTime(int maxBurnTime, boolean sync);
     }
 
 }

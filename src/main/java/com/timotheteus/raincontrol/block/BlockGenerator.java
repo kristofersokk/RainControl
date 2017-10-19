@@ -2,6 +2,7 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.RainControl;
 import com.timotheteus.raincontrol.handlers.GuiHandler;
+import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.Names;
 import net.minecraft.block.ITileEntityProvider;
@@ -40,6 +41,16 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
         }
         playerIn.openGui(RainControl.instance, GuiHandler.GUY_FURNACEBLOCK, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
+    }
+
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        if (tileentity instanceof TileEntityGeneratorBlock) {
+            ((TileEntityGeneratorBlock) tileentity).dropInventory(worldIn, pos, (TileEntityBase) tileentity);
+        }
+
+        super.breakBlock(worldIn, pos, state);
     }
 
     @Override

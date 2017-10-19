@@ -19,15 +19,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
 
-public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, Syncable.Generator, Syncable.BurnTime, iPowerStorage {
+public class TileEntityGeneratorBlock extends TileEntityBase implements Inventory, Syncable, Syncable.Energy, Syncable.BurnTime, IEnergyStorage, iPowerStorage {
 
-    public static final int SIZE = 1;
+    private static final int SIZE = 1;
     private static final int maxStorage = 200000;
     private static final int maxOutput = 1000;
-    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{
+    private static final PacketTypes.SERVER[] serverPackets = new PacketTypes.SERVER[]{
             PacketTypes.SERVER.ENERGY,
-            PacketTypes.SERVER.GENERATOR,
             PacketTypes.SERVER.BURN_TIME
+    };
+    private static final PacketTypes.CONFIG[] configPackets = new PacketTypes.CONFIG[]{
+            PacketTypes.CONFIG.GENERATOR_GENERATION,
     };
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
@@ -70,6 +72,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
                     sync = true;
             } else {
                 //not burning
+                //TODO broken isn't continuing ticking OR packet fails to send
                 if (!getWorld().isBlockPowered(getPos())) {
                     ItemStack stack = itemStackHandler.getStackInSlot(0);
                     int newBurnTime = TileEntityFurnace.getItemBurnTime(stack);
@@ -87,11 +90,15 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
             if (sync && atTick(8))
                 markDirty(true);
 
-            if (atTick(1000)) {
-                //TODO separate generation packet here (new packet type CONFIG?)
-            }
+//            if (atTick(100)) {
+//                new PacketConfig(this, configPackets,
+//                        generation
+//                ).sendToDimension();
+//            }
+            //TODO why packet config nullifies energy, doesn't make sense
 
         } else {
+            //client-side
             if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
                 burnTimeLeft--;
                 changeEnergy(generation, false);
@@ -109,6 +116,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         energy = compound.getInteger("energy");
         burnTimeLeft = compound.getInteger("burnTime");
         maxBurnTimeLeft = compound.getInteger("maxBurnTime");
+        generation = compound.getInteger("generation");
         if (compound.hasKey("items")) {
             itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
         }
@@ -120,6 +128,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         compound.setInteger("energy", energy);
         compound.setInteger("burnTime", burnTimeLeft);
         compound.setInteger("maxBurnTime", maxBurnTimeLeft);
+        compound.setInteger("generation", generation);
         compound.setTag("items", itemStackHandler.serializeNBT());
         return super.writeToNBT(compound);
     }
@@ -211,12 +220,10 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         markDirty(sync);
     }
 
-    @Override
     public int getBurnTime() {
         return burnTimeLeft;
     }
 
-    @Override
     public int getMaxBurnTime() {
         return maxBurnTimeLeft;
     }
@@ -227,9 +234,8 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         if (sync) {
             new PacketServerToClient(
                     this,
-                    packets,
+                    serverPackets,
                     getEnergyStored(),
-                    generation,
                     burnTimeLeft,
                     maxBurnTimeLeft
             )
@@ -237,9 +243,39 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements IEnergyS
         }
     }
 
-    @Override
-    public void setProduce(int a, boolean sync) {
+    public void setGeneration(int a, boolean sync) {
         generation = a;
         markDirty(sync);
+    }
+
+    @Override
+    public void sync(PacketTypes.SERVER packet, Object message, boolean sync) {
+        switch (packet) {
+            case ENERGY:
+                int energy = (int) message;
+                setEnergy(energy, sync);
+                break;
+            case BURN_TIME:
+                int burntime = ((int[]) message)[0];
+                int maxburntime = ((int[]) message)[1];
+                setBurnTime(burntime, sync);
+                setMaxBurnTime(maxburntime, sync);
+                break;
+        }
+    }
+
+    @Override
+    public void sync(PacketTypes.CONFIG packet, Object message, boolean sync) {
+        switch (packet) {
+            case GENERATOR_GENERATION:
+                int generation = (int) message;
+                setGeneration(generation, sync);
+                break;
+        }
+    }
+
+    @Override
+    public CustomItemStackHandler getSlotsHandler() {
+        return itemStackHandler;
     }
 }

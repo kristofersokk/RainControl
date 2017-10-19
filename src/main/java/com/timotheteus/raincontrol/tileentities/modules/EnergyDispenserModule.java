@@ -46,7 +46,7 @@ public class EnergyDispenserModule extends Module {
                     if (sendEnergyTo(te, neighbourFaces.get(te)))
                         sync = true;
         if (sync)
-            ((Syncable.Sync) te).markDirty(true);
+            ((Syncable) te).markDirty(true);
     }
 
     /**

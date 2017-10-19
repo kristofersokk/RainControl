@@ -14,48 +14,39 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.nio.charset.Charset;
 
-public class PacketServerToClient implements IMessage {
+public class PacketConfig implements IMessage {
 
-    private PacketTypes.SERVER[] types;
+    private PacketTypes.CONFIG[] types;
     private BlockPos blockPos;
     private int dimensionID;
-    private int energy;
-    private int burnTime;
-    private int maxBurnTime;
+    private int generator_generation;
 
     /**
      * Required objects are in the PacketTypes descriptions.
      * Put the objects in the order of the packet types
      *
-     * @param te tile entity
-     * @param types different server packet types
-     *              in the order:
-     *              ENERGY,
-     *              BURN_TIME
+     * @param te      tile entity
+     * @param types   different config packet types
+     *                in the right order
      * @param objects objects in the right order for the packets
      */
-    public PacketServerToClient(TileEntity te, PacketTypes.SERVER[] types, Object... objects) {
+    public PacketConfig(TileEntity te, PacketTypes.CONFIG[] types, Object... objects) {
         this.types = types;
         blockPos = te.getPos();
         dimensionID = te.getWorld().provider.getDimension();
         int index = 0;
-        for (PacketTypes.SERVER type : types) {
+        for (PacketTypes.CONFIG type : types) {
             switch (type) {
-                case ENERGY:
-                    energy = (int) objects[index];
+                case GENERATOR_GENERATION:
+                    generator_generation = (int) objects[index];
                     index += 1;
-                    continue;
-                case BURN_TIME:
-                    burnTime = (int) objects[index];
-                    maxBurnTime = (int) objects[index + 1];
-                    index += 2;
                     continue;
 
             }
         }
     }
 
-    public PacketServerToClient() {
+    public PacketConfig() {
 
     }
 
@@ -80,17 +71,14 @@ public class PacketServerToClient implements IMessage {
         blockPos = BlockPos.fromLong(buf.readLong());
         dimensionID = buf.readInt();
         int len = buf.readInt();
-        this.types = PacketTypes.SERVER.getTypes(stringToIntArray(
+        this.types = PacketTypes.CONFIG.getTypes(stringToIntArray(
                 buf.readCharSequence(len, Charset.defaultCharset())
         ));
-        for (PacketTypes.SERVER type : types) {
+
+        for (PacketTypes.CONFIG type : types) {
             switch (type) {
-                case ENERGY:
-                    energy = buf.readInt();
-                    continue;
-                case BURN_TIME:
-                    burnTime = buf.readInt();
-                    maxBurnTime = buf.readInt();
+                case GENERATOR_GENERATION:
+                    generator_generation = buf.readInt();
                     continue;
 
             }
@@ -101,20 +89,15 @@ public class PacketServerToClient implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeLong(blockPos.toLong());
         buf.writeInt(dimensionID);
-        CharSequence sequence = intArrayToString(PacketTypes.SERVER.getIds(types));
+        CharSequence sequence = intArrayToString(PacketTypes.CONFIG.getIds(types));
         int len = sequence.length();
         buf.writeInt(len);
         buf.writeCharSequence(sequence, Charset.defaultCharset());
-        for (PacketTypes.SERVER type : types) {
+        for (PacketTypes.CONFIG type : types) {
             switch (type) {
-                case ENERGY:
-                    buf.writeInt(energy);
+                case GENERATOR_GENERATION:
+                    buf.writeInt(generator_generation);
                     continue;
-                case BURN_TIME:
-                    buf.writeInt(burnTime);
-                    buf.writeInt(maxBurnTime);
-                    continue;
-
             }
 
         }
@@ -125,30 +108,25 @@ public class PacketServerToClient implements IMessage {
         PacketHandler.INSTANCE.sendToDimension(this, dimensionID);
     }
 
-    public static class Handler implements IMessageHandler<PacketServerToClient, IMessage> {
+    public static class Handler implements IMessageHandler<com.timotheteus.raincontrol.packets.PacketConfig, IMessage> {
 
         @Override
-        public IMessage onMessage(PacketServerToClient message, MessageContext ctx) {
+        public IMessage onMessage(com.timotheteus.raincontrol.packets.PacketConfig message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> handle(message, ctx));
             return null;
         }
 
-        private void handle(PacketServerToClient message, MessageContext ctx) {
+        private void handle(com.timotheteus.raincontrol.packets.PacketConfig message, MessageContext ctx) {
             BlockPos pos = message.blockPos;
             EntityPlayer player = Minecraft.getMinecraft().player;
             World world = player.getEntityWorld();
             TileEntity te = world.getTileEntity(pos);
             if (te != null) {
                 Syncable syncable = ((Syncable) te);
-                for (PacketTypes.SERVER type : message.types) {
+                for (PacketTypes.CONFIG type : message.types) {
                     switch (type) {
-                        case ENERGY:
-                            Minecraft.getMinecraft().addScheduledTask(() -> syncable.sync(PacketTypes.SERVER.ENERGY, message.energy, false));
-                            continue;
-                        case BURN_TIME:
-                            Minecraft.getMinecraft().addScheduledTask(() -> {
-                                syncable.sync(PacketTypes.SERVER.BURN_TIME, new int[]{message.burnTime, message.maxBurnTime}, false);
-                            });
+                        case GENERATOR_GENERATION:
+                            Minecraft.getMinecraft().addScheduledTask(() -> syncable.sync(PacketTypes.CONFIG.GENERATOR_GENERATION, message.generator_generation, false));
                             continue;
                     }
                 }

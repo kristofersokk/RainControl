@@ -15,6 +15,11 @@ import net.minecraftforge.items.IItemHandler;
 public class ContainerGenerator extends Container {
 
     private TileEntityGeneratorBlock te;
+    public int OWN_SIZE = 1;
+    public int inventoryStart = OWN_SIZE;
+    public int inventoryEnd = inventoryStart + 26;
+    public int hotbarStart = inventoryEnd + 1;
+    public int hotbarEnd = hotbarStart + 8;
 
     public ContainerGenerator(IInventory playerInventory, TileEntityGeneratorBlock te) {
         this.te = te;
@@ -65,10 +70,6 @@ public class ContainerGenerator extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        int inventoryStart = 1;
-        int inventoryEnd = inventoryStart + 26;
-        int hotbarStart = inventoryEnd + 1;
-        int hotbarEnd = hotbarStart + 8;
 
         Slot theSlot = this.inventorySlots.get(index);
 

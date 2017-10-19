@@ -11,11 +11,6 @@ public class PacketTypes {
         ENERGY(),
 
         /**
-         * needs BlockPos, int FE generation amount
-         */
-        GENERATOR(),
-
-        /**
          * needs BlockPos, int burnTime
          */
         BURN_TIME();
@@ -60,6 +55,31 @@ public class PacketTypes {
             int[] results = new int[types.length];
             for (int i = 0; i < types.length; i++) {
                 CLIENT type = types[i];
+                results[i] = type.ordinal();
+            }
+            return results;
+        }
+    }
+
+    public enum CONFIG {
+        GENERATOR_GENERATION;
+
+        CONFIG() {
+
+        }
+
+        public static CONFIG[] getTypes(int[] ids) {
+            CONFIG[] results = new CONFIG[ids.length];
+            for (int i = 0; i < ids.length; i++) {
+                results[i] = values()[i];
+            }
+            return results;
+        }
+
+        public static int[] getIds(CONFIG[] types) {
+            int[] results = new int[types.length];
+            for (int i = 0; i < types.length; i++) {
+                CONFIG type = types[i];
                 results[i] = type.ordinal();
             }
             return results;

@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorage, Syncable.Sync, Syncable.Energy, iPowerStorage {
+public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorage, Syncable, Syncable.Energy, iPowerStorage {
 
     private static final int cooldownLength = 100;
     private static final int maxStorage = 1000000;
@@ -187,6 +187,21 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
         if (Arrays.asList(capabilities).contains(capability))
             return (T) this;
         return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void sync(PacketTypes.SERVER packet, Object message, boolean sync) {
+        switch (packet) {
+            case ENERGY:
+                int a = (int) message;
+                setEnergy(a, sync);
+                break;
+        }
+    }
+
+    @Override
+    public void sync(PacketTypes.CONFIG packet, Object message, boolean sync) {
+
     }
 
     @Override

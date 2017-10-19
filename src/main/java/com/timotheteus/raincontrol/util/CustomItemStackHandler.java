@@ -1,8 +1,11 @@
 package com.timotheteus.raincontrol.util;
 
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class CustomItemStackHandler extends ItemStackHandler {
@@ -16,6 +19,12 @@ public class CustomItemStackHandler extends ItemStackHandler {
 
     public CustomItemStackHandler(NonNullList<ItemStack> stacks) {
         super(stacks);
+    }
+
+    public void dropInventory(World world, BlockPos pos) {
+        for (ItemStack stack : super.stacks) {
+            InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+        }
     }
 
     /**
