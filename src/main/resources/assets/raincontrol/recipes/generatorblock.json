@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "raincontrol:generatorblock"
+  },
+  "pattern": [
+    "ses",
+    "rbr",
+    "ses"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "b": {
+      "item": "minecraft:iron_block"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "e": {
+      "item": "minecraft:coal:0"
+    },
+    "s": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

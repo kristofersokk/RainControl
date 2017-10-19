@@ -1,5 +1,6 @@
 package com.timotheteus.raincontrol.handlers;
 
+import com.timotheteus.raincontrol.packets.PacketConfig;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -20,6 +21,7 @@ public class PacketHandler {
     }
 
     public static void registerMessages(){
-        INSTANCE.registerMessage(PacketServerToClient.Handler.class, PacketServerToClient.class, 0, Side.CLIENT);
+        INSTANCE.registerMessage(PacketServerToClient.Handler.class, PacketServerToClient.class, nextID(), Side.CLIENT);
+        INSTANCE.registerMessage(PacketConfig.Handler.class, PacketConfig.class, nextID(), Side.CLIENT);
     }
 }

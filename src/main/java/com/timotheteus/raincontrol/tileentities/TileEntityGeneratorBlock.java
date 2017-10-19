@@ -3,6 +3,7 @@ package com.timotheteus.raincontrol.tileentities;
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
 import com.timotheteus.raincontrol.config.Config;
+import com.timotheteus.raincontrol.packets.PacketConfig;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
@@ -36,7 +37,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
             CapabilityEJ.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
-    private static int generation;
+    private int generation;
 
     private CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(SIZE) {
         @Override
@@ -67,12 +68,13 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
 
             //burning
             if (burnTimeLeft > 0) {
-                burnTimeLeft--;
-                if (changeEnergy(generation, false))
-                    sync = true;
+                if (energy != maxStorage) {
+                    burnTimeLeft--;
+                    if (changeEnergy(generation, false))
+                        sync = true;
+                }
             } else {
                 //not burning
-                //TODO broken isn't continuing ticking OR packet fails to send
                 if (!getWorld().isBlockPowered(getPos())) {
                     ItemStack stack = itemStackHandler.getStackInSlot(0);
                     int newBurnTime = TileEntityFurnace.getItemBurnTime(stack);
@@ -90,13 +92,12 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
             if (sync && atTick(8))
                 markDirty(true);
 
-//            if (atTick(100)) {
-//                new PacketConfig(this, configPackets,
-//                        generation
-//                ).sendToDimension();
-//            }
-            //TODO why packet config nullifies energy, doesn't make sense
-
+            if (atTick(100)) {
+                new PacketConfig(this, configPackets,
+                        generation
+                ).sendToDimension();
+                markDirty(true);
+            }
         } else {
             //client-side
             if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
@@ -107,9 +108,9 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
 
     }
 
-    //TODO add correct drops
+    //TODO check recipe
 
-    //TODO add recipe
+    //TODO implement a filter for the insertion of items(hopper)
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -262,6 +263,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
                 setMaxBurnTime(maxburntime, sync);
                 break;
         }
+        markDirty(sync);
     }
 
     @Override
@@ -272,6 +274,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
                 setGeneration(generation, sync);
                 break;
         }
+        markDirty(sync);
     }
 
     @Override
