@@ -16,18 +16,9 @@ public class CustomSlot extends SlotItemHandler {
         this.filter = filter;
     }
 
-    public static boolean isValid(ItemStack stack, StackFilter filter) {
-        switch (filter) {
-            case GENERATOR:
-                if (TileEntityFurnace.getItemBurnTime(stack) == 0)
-                    return false;
-        }
-        return true;
-    }
-
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return isValid(stack, filter);
+        return filter.isValid(stack);
     }
 
     public enum StackFilter {
@@ -35,6 +26,15 @@ public class CustomSlot extends SlotItemHandler {
         GENERATOR;
 
         StackFilter() {
+        }
+
+        public boolean isValid(ItemStack stack) {
+            switch (this) {
+                case GENERATOR:
+                    if (TileEntityFurnace.getItemBurnTime(stack) == 0)
+                        return false;
+            }
+            return true;
         }
     }
 }

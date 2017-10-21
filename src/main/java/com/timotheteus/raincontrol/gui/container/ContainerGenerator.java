@@ -98,7 +98,7 @@ public class ContainerGenerator extends Container {
                 return ItemStack.EMPTY.copy();
             }
 
-            if (!CustomSlot.isValid(newStack, filter)) {
+            if (!filter.isValid(newStack)) {
                 theSlot.putStack(ItemStack.EMPTY.copy());
             } else {
                 theSlot.onSlotChanged();
