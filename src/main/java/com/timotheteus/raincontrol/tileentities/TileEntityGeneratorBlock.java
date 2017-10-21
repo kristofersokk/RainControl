@@ -2,12 +2,13 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.pengu.hammercore.common.capabilities.CapabilityEJ;
 import com.pengu.hammercore.energy.iPowerStorage;
+import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.config.Config;
+import com.timotheteus.raincontrol.gui.CustomSlot;
 import com.timotheteus.raincontrol.packets.PacketConfig;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
-import com.timotheteus.raincontrol.util.CustomItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,9 +21,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
 
-public class TileEntityGeneratorBlock extends TileEntityBase implements Inventory, Syncable, Syncable.Energy, Syncable.BurnTime, IEnergyStorage, iPowerStorage {
+public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Syncable, Syncable.Energy, Syncable.BurnTime, IEnergyStorage, iPowerStorage {
 
-    private static final int SIZE = 1;
     private static final int maxStorage = 200000;
     private static final int maxOutput = 1000;
     private static final PacketTypes.SERVER[] serverPackets = new PacketTypes.SERVER[]{
@@ -39,13 +39,6 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
     };
     private int generation;
 
-    private CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(SIZE) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            markDirty();
-        }
-    };
-
     private int energy;
     private int maxBurnTimeLeft;
     private int burnTimeLeft;
@@ -55,7 +48,9 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
                 ModuleTypes.ENERGY_DISPENSER
         }, new Object[][]{
                 {maxOutput}
-        });
+                },
+                CustomSlot.StackFilter.GENERATOR
+        );
         generation = Config.generatorProduce;
         markDirty(false);
     }
@@ -108,9 +103,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
 
     }
 
-    //TODO check recipe
-
-    //TODO implement a filter for the insertion of items(hopper)
+    //TODO add RF and Tesla APIs
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -138,6 +131,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
         return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
     }
 
+    @NotNull
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
@@ -244,7 +238,7 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
         }
     }
 
-    public void setGeneration(int a, boolean sync) {
+    private void setGeneration(int a, boolean sync) {
         generation = a;
         markDirty(sync);
     }
@@ -275,10 +269,5 @@ public class TileEntityGeneratorBlock extends TileEntityBase implements Inventor
                 break;
         }
         markDirty(sync);
-    }
-
-    @Override
-    public CustomItemStackHandler getSlotsHandler() {
-        return itemStackHandler;
     }
 }
