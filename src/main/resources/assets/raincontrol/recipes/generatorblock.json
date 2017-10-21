@@ -16,7 +16,8 @@
       "item": "minecraft:redstone"
     },
     "e": {
-      "item": "minecraft:coal:0"
+      "item": "minecraft:coal",
+      "data": 0
     },
     "s": {
       "item": "minecraft:iron_ingot"
