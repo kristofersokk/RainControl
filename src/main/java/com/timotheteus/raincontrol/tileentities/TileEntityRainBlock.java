@@ -42,45 +42,54 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
 
     public void activated(@Nullable EntityPlayer player, boolean shiftKeyDown){
         try {
+            //just to check if there is a player
             World world = player.getEntityWorld();
             if (!world.isRemote) {
-                if (!shiftKeyDown){
-                    player.sendStatusMessage(new TextComponentString("Energy: " + ChatHelper.getFormattedInt(energy) + " FE"), false);
-                }else if (cooldown == 0){
-                    if (energy >= activation) {
-                        changeEnergy(-activation, true);
-                        cooldown = cooldownLength;
-                        if (world.getWorldInfo().isRaining()){
-                            world.getWorldInfo().setRaining(false);
-                            ChatHelper.chatMessageServer(player, "Stopping rain");
-                        }else{
-                            world.getWorldInfo().setRaining(true);
-                            ChatHelper.chatMessageServer(player, "Starting rain");
+                if (world.canSeeSky(pos)) {
+                    if (!shiftKeyDown) {
+                        player.sendStatusMessage(new TextComponentString("Energy: " + ChatHelper.getFormattedInt(energy) + " FE"), false);
+                    } else if (cooldown == 0) {
+                        if (energy >= activation) {
+                            changeEnergy(-activation, true);
+                            cooldown = cooldownLength;
+                            if (world.getWorldInfo().isRaining()) {
+                                world.getWorldInfo().setRaining(false);
+                                ChatHelper.chatMessageServer(player, "Stopping rain");
+                            } else {
+                                world.getWorldInfo().setRaining(true);
+                                ChatHelper.chatMessageServer(player, "Starting rain");
+                            }
+                        } else {
+                            ChatHelper.chatMessageServer(player, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
+                            cooldown = 20;
                         }
-                    }else{
-                        ChatHelper.chatMessageServer(player, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
-                        cooldown = 20;
                     }
+                } else {
+                    ChatHelper.chatMessageServer(player, "Needs to see the sky");
                 }
             }
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) {//activated by redstone
             //redstone activation
             if (!world.isRemote) {
                 if (cooldown == 0){
-                    ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 5, WorldHelper.Shape.ROUND);
-                    if (energy >= activation) {
-                        changeEnergy(-activation, true);
-                        cooldown = cooldownLength;
-                        if (world.getWorldInfo().isRaining()){
-                            world.getWorldInfo().setRaining(false);
-                            ChatHelper.chatMessageServer(players, "Stopping rain");
-                        }else{
-                            world.getWorldInfo().setRaining(true);
-                            ChatHelper.chatMessageServer(players, "Starting rain");
+                    if (world.canSeeSky(pos)) {
+                        ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 5, WorldHelper.Shape.ROUND);
+                        if (energy >= activation) {
+                            changeEnergy(-activation, true);
+                            cooldown = cooldownLength;
+                            if (world.getWorldInfo().isRaining()) {
+                                world.getWorldInfo().setRaining(false);
+                                ChatHelper.chatMessageServer(players, "Stopping rain");
+                            } else {
+                                world.getWorldInfo().setRaining(true);
+                                ChatHelper.chatMessageServer(players, "Starting rain");
+                            }
+                        } else {
+                            ChatHelper.chatMessageServer(players, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
+                            cooldown = 20;
                         }
-                    }else{
-                        ChatHelper.chatMessageServer(players, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
-                        cooldown = 20;
+                    } else {
+                        ChatHelper.chatMessageServer(player, "Needs to see the sky");
                     }
                 }
             }
