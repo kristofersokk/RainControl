@@ -8,7 +8,7 @@ public class Config {
 
     private static final String CATEGORY_GENERAL = "general";
 
-    public static int generatorProduce = 0;
+    public static Integer generatorProduce = 0;
 
     public static void readConfig() {
         Configuration cfg = CommonProxy.config;
