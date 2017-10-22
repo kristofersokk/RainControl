@@ -5,7 +5,7 @@ import net.minecraft.util.text.TextComponentString;
 
 import java.util.List;
 
-public class ChatHelper {
+public class TextHelper {
 
     /**
      * usually called on server
@@ -27,7 +27,7 @@ public class ChatHelper {
     }
 
 
-    public static String getFormattedInt(int a) {
+    public static String getEnergyText(int a) {
         String b = Integer.toString(a);
         int len = b.length();
         int mod = Math.floorMod(len, 3);
@@ -39,6 +39,23 @@ public class ChatHelper {
             for (int i = 0; i < commas; i++) {
                 result += "," + b.substring(i * 3 + mod, i * 3 + mod + 3);
             }
+        }
+        return result;
+    }
+
+    /**
+     * @return (250) "12s 10"
+     */
+    public static String getTimeText(int ticks) {
+        String result = "";
+        if (ticks > 1200) {
+            int minutes = ticks / 1200;
+            result += Integer.toString(minutes) + "min ";
+            ticks %= 1200;
+        }
+        if (ticks > 20) {
+            int seconds = ticks / 20;
+            result += Integer.toString(seconds) + "s ";
         }
         return result;
     }
