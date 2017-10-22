@@ -2,7 +2,7 @@ package com.timotheteus.raincontrol.items.itemblocks;
 
 import com.timotheteus.raincontrol.block.ItemBlockBase;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
-import com.timotheteus.raincontrol.util.ChatHelper;
+import com.timotheteus.raincontrol.util.TextHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -25,7 +25,7 @@ public class ItemRainBlock extends ItemBlockBase {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (hasNbtTag(stack, "energy")) {
             int energy = stack.getTagCompound().getInteger("energy");
-            tooltip.add("Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
+            tooltip.add("Energy: " + TextHelper.getEnergyText(energy) + " FE");
         } else {
             tooltip.add("Energy: 0 FE");
         }

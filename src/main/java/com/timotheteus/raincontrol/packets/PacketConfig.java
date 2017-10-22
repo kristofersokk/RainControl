@@ -1,13 +1,10 @@
 package com.timotheteus.raincontrol.packets;
 
+import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.handlers.PacketHandler;
-import com.timotheteus.raincontrol.tileentities.Syncable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -17,23 +14,18 @@ import java.nio.charset.Charset;
 public class PacketConfig implements IMessage {
 
     private PacketTypes.CONFIG[] types;
-    private BlockPos blockPos;
-    private int dimensionID;
     private int generator_generation;
 
     /**
      * Required objects are in the PacketTypes descriptions.
      * Put the objects in the order of the packet types
      *
-     * @param te      tile entity
      * @param types   different config packet types
      *                in the right order
      * @param objects objects in the right order for the packets
      */
-    public PacketConfig(TileEntity te, PacketTypes.CONFIG[] types, Object... objects) {
+    public PacketConfig(PacketTypes.CONFIG[] types, Object... objects) {
         this.types = types;
-        blockPos = te.getPos();
-        dimensionID = te.getWorld().provider.getDimension();
         int index = 0;
         for (PacketTypes.CONFIG type : types) {
             switch (type) {
@@ -44,10 +36,6 @@ public class PacketConfig implements IMessage {
 
             }
         }
-    }
-
-    public PacketConfig() {
-
     }
 
     private static String intArrayToString(int[] ints) {
@@ -68,13 +56,10 @@ public class PacketConfig implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        blockPos = BlockPos.fromLong(buf.readLong());
-        dimensionID = buf.readInt();
         int len = buf.readInt();
         this.types = PacketTypes.CONFIG.getTypes(stringToIntArray(
                 buf.readCharSequence(len, Charset.defaultCharset())
         ));
-
         for (PacketTypes.CONFIG type : types) {
             switch (type) {
                 case GENERATOR_GENERATION:
@@ -87,8 +72,6 @@ public class PacketConfig implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeLong(blockPos.toLong());
-        buf.writeInt(dimensionID);
         CharSequence sequence = intArrayToString(PacketTypes.CONFIG.getIds(types));
         int len = sequence.length();
         buf.writeInt(len);
@@ -104,8 +87,12 @@ public class PacketConfig implements IMessage {
 
     }
 
-    public void sendToDimension() {
-        PacketHandler.INSTANCE.sendToDimension(this, dimensionID);
+    public void sendToAll() {
+        PacketHandler.INSTANCE.sendToAll(this);
+    }
+
+    public void sendTo(EntityPlayerMP player) {
+        PacketHandler.INSTANCE.sendTo(this, player);
     }
 
     public static class Handler implements IMessageHandler<com.timotheteus.raincontrol.packets.PacketConfig, IMessage> {
@@ -117,20 +104,14 @@ public class PacketConfig implements IMessage {
         }
 
         private void handle(com.timotheteus.raincontrol.packets.PacketConfig message, MessageContext ctx) {
-            BlockPos pos = message.blockPos;
-            EntityPlayer player = Minecraft.getMinecraft().player;
-            World world = player.getEntityWorld();
-            TileEntity te = world.getTileEntity(pos);
-            if (te != null) {
-                Syncable syncable = ((Syncable) te);
-                for (PacketTypes.CONFIG type : message.types) {
-                    switch (type) {
-                        case GENERATOR_GENERATION:
-                            Minecraft.getMinecraft().addScheduledTask(() -> syncable.sync(PacketTypes.CONFIG.GENERATOR_GENERATION, message.generator_generation, false));
-                            continue;
-                    }
+            for (PacketTypes.CONFIG type : message.types) {
+                switch (type) {
+                    case GENERATOR_GENERATION:
+                        Minecraft.getMinecraft().addScheduledTask(() -> {
+                            Config.generatorProduce = message.generator_generation;
+                        });
+                        continue;
                 }
-
             }
         }
     }
