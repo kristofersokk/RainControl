@@ -34,6 +34,7 @@ public class Items {
         registerItemBlockModel(new ItemBlockBase(new BlockGenerator()));
     }
 
+    @SideOnly(Side.CLIENT)
     private static void registerItemBlockModel(ItemBlockBase item) {
         ModelResourceLocation location = new ModelResourceLocation(item.getModelName());
 //        ModelBakery.registerItemVariants(item, location);

@@ -11,6 +11,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.nio.charset.Charset;
 
@@ -125,6 +127,7 @@ public class PacketServerToClient implements IMessage {
         PacketHandler.INSTANCE.sendToDimension(this, dimensionID);
     }
 
+    @SideOnly(Side.CLIENT)
     public static class Handler implements IMessageHandler<PacketServerToClient, IMessage> {
 
         @Override

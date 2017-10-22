@@ -35,10 +35,12 @@ public class Blocks {
         registerBlockModel(blockGenerator);
     }
 
+    @SideOnly(Side.CLIENT)
     public static void registerBlockModel(BlockBase block) {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getModelName()));
     }
 
+    @SideOnly(Side.CLIENT)
     public static void registerBlockModel(BlockBase block, String variant) {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getModelName(), variant));
     }

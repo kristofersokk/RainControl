@@ -25,9 +25,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
             PacketTypes.SERVER.ENERGY,
             PacketTypes.SERVER.BURN_TIME
     };
-    private static final PacketTypes.CONFIG[] configPackets = new PacketTypes.CONFIG[]{
-            PacketTypes.CONFIG.GENERATOR_GENERATION
-    };
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY

@@ -8,6 +8,7 @@ import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 @Mod(modid = ModUtil.MOD_ID,
         name = ModUtil.NAME,
@@ -37,6 +39,13 @@ public class RainControl {
     @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
     public static CommonProxy proxy;
 
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(proxy);
+        MinecraftForge.EVENT_BUS.register(this);
+        proxy.preInit(event);
+    }
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
         proxy.init(event);
@@ -47,15 +56,9 @@ public class RainControl {
         proxy.postInit(event);
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(proxy);
-        MinecraftForge.EVENT_BUS.register(this);
-        proxy.preInit(event);
-    }
 
     @SubscribeEvent
-    public void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
         Entity entity = event.player;
         if (entity instanceof EntityPlayerMP) {
             new PacketConfig(configPackets, Config.generatorProduce).sendTo((EntityPlayerMP) entity);
