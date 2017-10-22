@@ -2,11 +2,17 @@ package com.timotheteus.raincontrol.gui.gui;
 
 import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
-import com.timotheteus.raincontrol.util.ChatHelper;
 import com.timotheteus.raincontrol.util.ModUtil;
+import com.timotheteus.raincontrol.util.TextHelper;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
+
+import java.util.List;
 
 public class GeneratorContainerGui extends GuiContainer {
 
@@ -53,16 +59,48 @@ public class GeneratorContainerGui extends GuiContainer {
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         //energy bar
         if (isPointInRegion(52 + 61, 5, 10, 43, mouseX, mouseY))
-            drawHoveringText(Arrays.asList(new String[]{"Energy:", ChatHelper.getFormattedInt(te.getEnergyStored()) + "/" + ChatHelper.getFormattedInt(te.getMaxEnergyStored()) + " FE"}), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(Arrays.asList(new String[]{"Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/" + TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE"}), mouseX - guiLeft, mouseY - guiTop);
 
         //progress bar
         if (isPointInRegion(52 + 2, 56 - 4, 72, 4, mouseX, mouseY))
-            drawHoveringText(Arrays.asList(new String[]{"Burn time:", ChatHelper.getFormattedInt(te.getBurnTime()) + "/" + ChatHelper.getFormattedInt(te.getMaxBurnTime())}), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(Arrays.asList(new String[]{"Burn time:", TextHelper.getTimeText(te.getBurnTime()) + "/" + TextHelper.getTimeText(te.getMaxBurnTime())}), mouseX - guiLeft, mouseY - guiTop);
+
+//        renderHoveredToolTip(mouseX, mouseY);
+
+        Slot slot = getSlotUnderMouse();
+        if (slot != null && slot.getHasStack()) {
+            ItemStack stack = slot.getStack();
+            if (!stack.isEmpty()) {
+                List<String> tooltip = this.getItemToolTip(stack);
+                int max = stack.getMaxStackSize();
+                int burntime = TileEntityFurnace.getItemBurnTime(stack);
+                if (burntime != 0) {
+                    tooltip.add("Burn time / 1: " + TextHelper.getTimeText(burntime));
+                    int maxBurn = burntime * max;
+                    tooltip.add(String.format("Burn time / %s: ", Integer.toString(max)) + TextHelper.getTimeText(maxBurn));
+                    int peritem = te.getGeneration() * burntime;
+                    tooltip.add("FE per item: " + TextHelper.getEnergyText(peritem) + " FE");
+                    int total = peritem * stack.getCount();
+                    tooltip.add("FE per this stack: " + TextHelper.getEnergyText(total) + " FE");
+                }
+                FontRenderer font = stack.getItem().getFontRenderer(stack);
+                net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
+                this.drawHoveringText(tooltip, mouseX - guiLeft, mouseY - guiTop, (font == null ? fontRenderer : font));
+                net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
+            }
+        }
+
 
     }
 }
