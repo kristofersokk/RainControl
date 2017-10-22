@@ -1,11 +1,8 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.pengu.hammercore.common.capabilities.CapabilityEJ;
-import com.pengu.hammercore.energy.iPowerStorage;
 import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.gui.CustomSlot;
-import com.timotheteus.raincontrol.packets.PacketConfig;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
@@ -16,12 +13,11 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
 
-public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Syncable, Syncable.Energy, Syncable.BurnTime, IEnergyStorage, iPowerStorage {
+public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Syncable, Syncable.Energy, Syncable.BurnTime, Energy.Producer {
 
     private static final int maxStorage = 200000;
     private static final int maxOutput = 1000;
@@ -30,14 +26,13 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
             PacketTypes.SERVER.BURN_TIME
     };
     private static final PacketTypes.CONFIG[] configPackets = new PacketTypes.CONFIG[]{
-            PacketTypes.CONFIG.GENERATOR_GENERATION,
+            PacketTypes.CONFIG.GENERATOR_GENERATION
     };
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
-            CapabilityEJ.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
-    private int generation;
+    private static Integer generation = Config.generatorProduce;
 
     private int energy;
     private int maxBurnTimeLeft;
@@ -51,7 +46,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
                 },
                 CustomSlot.StackFilter.GENERATOR
         );
-        generation = Config.generatorProduce;
         markDirty(false);
     }
 
@@ -65,7 +59,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
             if (burnTimeLeft > 0) {
                 if (energy != maxStorage) {
                     burnTimeLeft--;
-                    if (changeEnergy(generation, false))
+                    if (changeEnergy(getGeneration(), false))
                         sync = true;
                 }
             } else {
@@ -81,36 +75,26 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
                         }
                     }
                 }
-
             }
 
             if (sync && atTick(8))
                 markDirty(true);
 
-            if (atTick(100)) {
-                new PacketConfig(this, configPackets,
-                        generation
-                ).sendToDimension();
-                markDirty(true);
-            }
         } else {
             //client-side
             if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
                 burnTimeLeft--;
-                changeEnergy(generation, false);
+                changeEnergy(getGeneration(), false);
             }
         }
 
     }
-
-    //TODO add RF and Tesla APIs
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         energy = compound.getInteger("energy");
         burnTimeLeft = compound.getInteger("burnTime");
         maxBurnTimeLeft = compound.getInteger("maxBurnTime");
-        generation = compound.getInteger("generation");
         if (compound.hasKey("items")) {
             itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
         }
@@ -122,7 +106,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         compound.setInteger("energy", energy);
         compound.setInteger("burnTime", burnTimeLeft);
         compound.setInteger("maxBurnTime", maxBurnTimeLeft);
-        compound.setInteger("generation", generation);
         compound.setTag("items", itemStackHandler.serializeNBT());
         return super.writeToNBT(compound);
     }
@@ -260,14 +243,62 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         markDirty(sync);
     }
 
+//    @Override
+//    public void sync(PacketTypes.CONFIG packet, Object message, boolean sync) {
+//        switch (packet) {
+//            case GENERATOR_GENERATION:
+//                int generation = (int) message;
+//                setGeneration(generation, sync);
+//                break;
+//        }
+//        markDirty(sync);
+//    }
+
+
     @Override
-    public void sync(PacketTypes.CONFIG packet, Object message, boolean sync) {
-        switch (packet) {
-            case GENERATOR_GENERATION:
-                int generation = (int) message;
-                setGeneration(generation, sync);
-                break;
+    public long getStoredPower() {
+        return energy;
+    }
+
+    @Override
+    public long getCapacity() {
+        return maxStorage;
+    }
+
+    public int getGeneration() {
+        return generation;
+    }
+
+    @Override
+    public long takePower(long power, boolean simulated) {
+        long extracted = Math.min(power, Math.min(maxOutput, energy));
+        if (!simulated) {
+            changeEnergy(-(int) extracted, true);
         }
-        markDirty(sync);
+        return extracted;
+    }
+
+    @Override
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+        int extracted = Math.min(maxExtract, Math.min(maxOutput, energy));
+        if (!simulate) {
+            changeEnergy(-extracted, true);
+        }
+        return extracted;
+    }
+
+    @Override
+    public int getEnergyStored(EnumFacing from) {
+        return energy;
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing from) {
+        return maxStorage;
+    }
+
+    @Override
+    public boolean canConnectEnergy(EnumFacing from) {
+        return true;
     }
 }
