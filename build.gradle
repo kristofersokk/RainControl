@@ -17,15 +17,9 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "1.0"
+version = "1.2"
 group = "com.timotheteus.raincontrol" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'raincontrol'
-
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
-
 
 
 ext.configFile = file "build.txt"
@@ -40,21 +34,24 @@ minecraft {
     version = "${config.forge_version}"
     runDir = "run"
     makeObfSourceJar = false
-    replace 'required-after:hammercore', "required-after:hammercore@[${config.hc_version},)"
 
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171015"
+    mappings = "snapshot_20171021"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 repositories {
     maven {
-        name = "APengu Maven"
-        url = "http://apengu.github.io/PenguLibs"
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
+    maven {
+        name = "Tesla API"
+        url 'http://maven.mcmoddev.com'
     }
 }
 
@@ -76,7 +73,8 @@ dependencies {
     //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
     //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 //    deobfCompile "apengu:HammerCore:1.12.2-1.9.4.8:deobf"
-    deobfCompile "apengu:HammerCore:${config.minecraft_version}-${config.hc_version}:deobf"
+    deobfCompile "cofh:RedstoneFlux:1.12-2.0.1.2:universal"
+    deobfCompile "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
 
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
