@@ -12,8 +12,6 @@ public interface Syncable {
      */
     void sync(PacketTypes.SERVER packet, Object message, boolean sync);
 
-    void sync(PacketTypes.CONFIG packet, Object message, boolean sync);
-
     void markDirty(boolean sync);
 
     interface Energy {
