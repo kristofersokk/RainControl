@@ -1,12 +1,11 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.pengu.hammercore.common.capabilities.CapabilityEJ;
-import com.pengu.hammercore.energy.iPowerStorage;
 import com.timotheteus.raincontrol.packets.PacketServerToClient;
 import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
-import com.timotheteus.raincontrol.util.ChatHelper;
+import com.timotheteus.raincontrol.util.TextHelper;
 import com.timotheteus.raincontrol.util.WorldHelper;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -14,25 +13,25 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorage, Syncable, Syncable.Energy, iPowerStorage {
+public class TileEntityRainBlock extends TileEntityBase implements Syncable, Syncable.Energy, Energy.Consumer {
 
     private static final int cooldownLength = 100;
-    private static final int maxStorage = 1000000;
-    private static final int maxInput = 2000;
-    private static final int activation = 100000;
+    private static final int maxStorage = 10000000;
+    private static final int maxInput = 4000;
+    private static final int activation = 1000000;
     private boolean redstone = false;
     private int prevEnergy = 0;
     private int energy = 0;
     private int cooldown = 0;
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
-            CapabilityEJ.ENERGY
+            TeslaCapabilities.CAPABILITY_HOLDER,
+            TeslaCapabilities.CAPABILITY_CONSUMER
     };
     private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY};
 
@@ -45,51 +44,51 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
             //just to check if there is a player
             World world = player.getEntityWorld();
             if (!world.isRemote) {
-                if (world.canSeeSky(pos)) {
+                if (world.canSeeSky(pos.up())) {
                     if (!shiftKeyDown) {
-                        player.sendStatusMessage(new TextComponentString("Energy: " + ChatHelper.getFormattedInt(energy) + " FE"), false);
+                        player.sendStatusMessage(new TextComponentString("Energy: " + TextHelper.getEnergyText(energy) + " FE"), false);
                     } else if (cooldown == 0) {
                         if (energy >= activation) {
                             changeEnergy(-activation, true);
                             cooldown = cooldownLength;
                             if (world.getWorldInfo().isRaining()) {
                                 world.getWorldInfo().setRaining(false);
-                                ChatHelper.chatMessageServer(player, "Stopping rain");
+                                TextHelper.chatMessageServer(player, "Stopping rain");
                             } else {
                                 world.getWorldInfo().setRaining(true);
-                                ChatHelper.chatMessageServer(player, "Starting rain");
+                                TextHelper.chatMessageServer(player, "Starting rain");
                             }
                         } else {
-                            ChatHelper.chatMessageServer(player, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
+                            TextHelper.chatMessageServer(player, "Not enough energy. Energy: " + TextHelper.getEnergyText(energy) + " FE");
                             cooldown = 20;
                         }
                     }
                 } else {
-                    ChatHelper.chatMessageServer(player, "Needs to see the sky");
+                    TextHelper.chatMessageServer(player, "Needs to see the sky");
                 }
             }
         } catch (NullPointerException e) {//activated by redstone
             //redstone activation
             if (!world.isRemote) {
                 if (cooldown == 0){
-                    if (world.canSeeSky(pos)) {
+                    if (world.canSeeSky(pos.up())) {
                         ArrayList<EntityPlayer> players = WorldHelper.getPlayersWithinRange(world, pos, 5, WorldHelper.Shape.ROUND);
                         if (energy >= activation) {
                             changeEnergy(-activation, true);
                             cooldown = cooldownLength;
                             if (world.getWorldInfo().isRaining()) {
                                 world.getWorldInfo().setRaining(false);
-                                ChatHelper.chatMessageServer(players, "Stopping rain");
+                                TextHelper.chatMessageServer(players, "Stopping rain");
                             } else {
                                 world.getWorldInfo().setRaining(true);
-                                ChatHelper.chatMessageServer(players, "Starting rain");
+                                TextHelper.chatMessageServer(players, "Starting rain");
                             }
                         } else {
-                            ChatHelper.chatMessageServer(players, "Not enough energy. Energy: " + ChatHelper.getFormattedInt(energy) + " FE");
+                            TextHelper.chatMessageServer(players, "Not enough energy. Energy: " + TextHelper.getEnergyText(energy) + " FE");
                             cooldown = 20;
                         }
                     } else {
-                        ChatHelper.chatMessageServer(player, "Needs to see the sky");
+                        TextHelper.chatMessageServer(player, "Needs to see the sky");
                     }
                 }
             }
@@ -191,11 +190,11 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-    {
-        if (Arrays.asList(capabilities).contains(capability))
-            return (T) this;
-        return super.getCapability(capability, facing);
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (Arrays.asList(capabilities).contains(capability)) {
+            return capability.cast((T) this);
+        }
+        return null;
     }
 
     @Override
@@ -206,11 +205,6 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
                 setEnergy(a, sync);
                 break;
         }
-    }
-
-    @Override
-    public void sync(PacketTypes.CONFIG packet, Object message, boolean sync) {
-
     }
 
     @Override
@@ -226,4 +220,46 @@ public class TileEntityRainBlock extends TileEntityBase implements IEnergyStorag
         }
     }
 
+    @Override
+    public long givePower(long power, boolean simulated) {
+        long received = Math.min(maxInput, Math.min(maxStorage - energy, power));
+        if (!simulated) {
+            changeEnergy((int) received, true);
+        }
+        return received;
+    }
+
+    @Override
+    public long getStoredPower() {
+        return energy;
+    }
+
+    @Override
+    public long getCapacity() {
+        return maxStorage;
+    }
+
+    @Override
+    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+        int received = Math.min(maxInput, Math.min(maxStorage - energy, maxReceive));
+        if (!simulate) {
+            changeEnergy(received, true);
+        }
+        return received;
+    }
+
+    @Override
+    public int getEnergyStored(EnumFacing from) {
+        return energy;
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing from) {
+        return maxStorage;
+    }
+
+    @Override
+    public boolean canConnectEnergy(EnumFacing from) {
+        return true;
+    }
 }
