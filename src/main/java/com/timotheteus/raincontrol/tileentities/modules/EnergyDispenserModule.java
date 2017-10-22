@@ -1,6 +1,9 @@
 package com.timotheteus.raincontrol.tileentities.modules;
 
+import cofh.redstoneflux.api.IEnergyReceiver;
 import com.timotheteus.raincontrol.tileentities.Syncable;
+import net.darkhax.tesla.api.ITeslaConsumer;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -54,14 +57,31 @@ public class EnergyDispenserModule extends Module {
      */
     private boolean sendEnergyTo(TileEntity neighbour, EnumFacing facing) {
         IEnergyStorage localStorage = (IEnergyStorage) this.te;
-        IEnergyStorage storage = (IEnergyStorage) neighbour;
-        if (neighbour.hasCapability(CapabilityEnergy.ENERGY, facing)) {
+
+        if (neighbour.hasCapability(CapabilityEnergy.ENERGY, facing) && neighbour instanceof IEnergyStorage) {
+            IEnergyStorage storage = (IEnergyStorage) neighbour;
             if (storage.canReceive()) {
                 int receive = storage.receiveEnergy(Math.min(localStorage.getEnergyStored(), maxOutput), false);
                 if (receive > 0) {
                     Syncable.Energy syncableEnergy = (Syncable.Energy) this.te;
                     return syncableEnergy.changeEnergy(-receive, false);
                 }
+            }
+        } else if (neighbour instanceof IEnergyReceiver) {
+            IEnergyReceiver storage = (IEnergyReceiver) neighbour;
+            if (storage.canConnectEnergy(facing)) {
+                int receive = storage.receiveEnergy(facing, Math.min(localStorage.getEnergyStored(), maxOutput), false);
+                if (receive > 0) {
+                    Syncable.Energy syncableEnergy = (Syncable.Energy) this.te;
+                    return syncableEnergy.changeEnergy(-receive, false);
+                }
+            }
+        } else if (neighbour.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, facing)) {
+            ITeslaConsumer storage = (ITeslaConsumer) neighbour;
+            long receive = storage.givePower(Math.min(localStorage.getEnergyStored(), maxOutput), false);
+            if (receive > 0) {
+                Syncable.Energy syncableEnergy = (Syncable.Energy) this.te;
+                return syncableEnergy.changeEnergy(-(int) receive, false);
             }
         }
         return false;
@@ -76,7 +96,7 @@ public class EnergyDispenserModule extends Module {
             TileEntity tileEntity;
             try {
                 tileEntity = te.getWorld().getTileEntity(neighbourPos);
-                if (tileEntity instanceof IEnergyStorage) {
+                if (tileEntity instanceof IEnergyStorage || tileEntity instanceof IEnergyReceiver || tileEntity instanceof ITeslaConsumer) {
                     neighbours.add(tileEntity);
                     neighbourFaces.put(tileEntity, facing.getOpposite());
                 }
