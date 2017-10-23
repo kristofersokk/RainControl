@@ -5,9 +5,7 @@ classes
 ironchest-1.11
 ModTutorials-1.12
 out
-!/run/mods
-run
+run/
 SolarFluxReborn-1.12
 .gradle
 .idea
-
