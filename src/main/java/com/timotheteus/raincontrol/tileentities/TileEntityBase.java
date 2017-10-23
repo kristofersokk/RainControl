@@ -3,16 +3,19 @@ package com.timotheteus.raincontrol.tileentities;
 import com.timotheteus.raincontrol.tileentities.modules.EnergyDispenserModule;
 import com.timotheteus.raincontrol.tileentities.modules.Module;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 public abstract class TileEntityBase extends TileEntity implements ITickable {
 
     private int tick = 0;
     private Module[] modules;
-    private ModuleTypes[] moduleTypes;
 
     TileEntityBase(ModuleTypes[] moduleTypes, Object[][] objects) {
         Module[] modules = new Module[moduleTypes.length];
@@ -25,7 +28,6 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
             }
         }
         this.modules = modules;
-        this.moduleTypes = moduleTypes;
     }
 
     @Override
@@ -46,6 +48,25 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
 
     protected boolean atTick(int a) {
         return Math.floorMod(tick, a) == 0;
+    }
+
+
+    public void markDirty(boolean sync) {
+        super.markDirty();
+        if (sync) {
+            sync();
+        }
+    }
+
+    public void sync() {
+        IBlockState state = world.getBlockState(pos);
+        world.notifyBlockUpdate(pos, state, state, 3);
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(pos, 1, getUpdateTag());
     }
 
 

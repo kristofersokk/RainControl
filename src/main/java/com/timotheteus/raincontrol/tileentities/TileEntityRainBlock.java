@@ -1,13 +1,14 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.timotheteus.raincontrol.packets.PacketServerToClient;
-import com.timotheteus.raincontrol.packets.PacketTypes;
+import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.TextHelper;
 import com.timotheteus.raincontrol.util.WorldHelper;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -18,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TileEntityRainBlock extends TileEntityBase implements Syncable, Syncable.Energy, Energy.Consumer {
+public class TileEntityRainBlock extends TileEntityBase implements Property.Energy, Energy.Consumer {
 
     private static final int cooldownLength = 100;
     private static final int maxStorage = 10000000;
@@ -33,7 +34,6 @@ public class TileEntityRainBlock extends TileEntityBase implements Syncable, Syn
             TeslaCapabilities.CAPABILITY_HOLDER,
             TeslaCapabilities.CAPABILITY_CONSUMER
     };
-    private static final PacketTypes.SERVER[] packets = new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY};
 
     public TileEntityRainBlock() {
         super(new ModuleTypes[]{}, new Object[][]{});
@@ -108,7 +108,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Syncable, Syn
                 cooldown--;
             if (atTick(4)) {
                 if (prevEnergy != energy){
-                    new PacketServerToClient(this, new PacketTypes.SERVER[]{PacketTypes.SERVER.ENERGY}, getEnergyStored());
+                    sync();
                     prevEnergy = energy;
                 }
             }
@@ -197,27 +197,19 @@ public class TileEntityRainBlock extends TileEntityBase implements Syncable, Syn
         return null;
     }
 
+    @NotNull
     @Override
-    public void sync(PacketTypes.SERVER packet, Object message, boolean sync) {
-        switch (packet) {
-            case ENERGY:
-                int a = (int) message;
-                setEnergy(a, sync);
-                break;
-        }
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound compound = getTileData();
+        compound.setInteger("energy", energy);
+        return compound;
     }
 
     @Override
-    public void markDirty(boolean sync) {
-        super.markDirty();
-        if (sync) {
-            new PacketServerToClient(
-                    this,
-                    packets,
-                    getEnergyStored()
-            )
-                    .sendToDimension();
-        }
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        NBTTagCompound compound = pkt.getNbtCompound();
+        energy = compound.getInteger("energy");
+        sync();
     }
 
     @Override

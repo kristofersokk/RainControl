@@ -1,7 +1,8 @@
 package com.timotheteus.raincontrol.tileentities.modules;
 
 import cofh.redstoneflux.api.IEnergyReceiver;
-import com.timotheteus.raincontrol.tileentities.Syncable;
+import com.timotheteus.raincontrol.tileentities.Property;
+import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
@@ -49,7 +50,7 @@ public class EnergyDispenserModule extends Module {
                     if (sendEnergyTo(te, neighbourFaces.get(te)))
                         sync = true;
         if (sync)
-            ((Syncable) te).markDirty(true);
+            ((TileEntityBase) te).markDirty(true);
     }
 
     /**
@@ -63,7 +64,7 @@ public class EnergyDispenserModule extends Module {
             if (storage.canReceive()) {
                 int receive = storage.receiveEnergy(Math.min(localStorage.getEnergyStored(), maxOutput), false);
                 if (receive > 0) {
-                    Syncable.Energy syncableEnergy = (Syncable.Energy) this.te;
+                    Property.Energy syncableEnergy = (Property.Energy) this.te;
                     return syncableEnergy.changeEnergy(-receive, false);
                 }
             }
@@ -72,7 +73,7 @@ public class EnergyDispenserModule extends Module {
             if (storage.canConnectEnergy(facing)) {
                 int receive = storage.receiveEnergy(facing, Math.min(localStorage.getEnergyStored(), maxOutput), false);
                 if (receive > 0) {
-                    Syncable.Energy syncableEnergy = (Syncable.Energy) this.te;
+                    Property.Energy syncableEnergy = (Property.Energy) this.te;
                     return syncableEnergy.changeEnergy(-receive, false);
                 }
             }
@@ -80,7 +81,7 @@ public class EnergyDispenserModule extends Module {
             ITeslaConsumer storage = (ITeslaConsumer) neighbour;
             long receive = storage.givePower(Math.min(localStorage.getEnergyStored(), maxOutput), false);
             if (receive > 0) {
-                Syncable.Energy syncableEnergy = (Syncable.Energy) this.te;
+                Property.Energy syncableEnergy = (Property.Energy) this.te;
                 return syncableEnergy.changeEnergy(-(int) receive, false);
             }
         }

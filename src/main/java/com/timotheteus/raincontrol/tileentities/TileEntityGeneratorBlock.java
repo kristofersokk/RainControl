@@ -3,12 +3,12 @@ package com.timotheteus.raincontrol.tileentities;
 import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.gui.CustomSlot;
-import com.timotheteus.raincontrol.packets.PacketServerToClient;
-import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -17,14 +17,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
 
-public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Syncable, Syncable.Energy, Syncable.BurnTime, Energy.Producer {
+public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Property.Energy, Property.BurnTime, Energy.Producer {
 
     private static final int maxStorage = 200000;
     private static final int maxOutput = 1000;
-    private static final PacketTypes.SERVER[] serverPackets = new PacketTypes.SERVER[]{
-            PacketTypes.SERVER.ENERGY,
-            PacketTypes.SERVER.BURN_TIME
-    };
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
@@ -74,7 +70,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
                 }
             }
 
-            if (sync && atTick(8))
+            if (sync && atTick(10))
                 markDirty(true);
 
         } else {
@@ -203,54 +199,24 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         return maxBurnTimeLeft;
     }
 
+    @NotNull
     @Override
-    public void markDirty(boolean sync) {
-        super.markDirty();
-        if (sync) {
-            new PacketServerToClient(
-                    this,
-                    serverPackets,
-                    getEnergyStored(),
-                    burnTimeLeft,
-                    maxBurnTimeLeft
-            )
-                    .sendToDimension();
-        }
-    }
-
-    private void setGeneration(int a, boolean sync) {
-        generation = a;
-        markDirty(sync);
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound compound = getTileData();
+        compound.setInteger("energy", energy);
+        compound.setInteger("burnTime", burnTimeLeft);
+        compound.setInteger("maxBurnTime", maxBurnTimeLeft);
+        return compound;
     }
 
     @Override
-    public void sync(PacketTypes.SERVER packet, Object message, boolean sync) {
-        switch (packet) {
-            case ENERGY:
-                int energy = (int) message;
-                setEnergy(energy, sync);
-                break;
-            case BURN_TIME:
-                int burntime = ((int[]) message)[0];
-                int maxburntime = ((int[]) message)[1];
-                setBurnTime(burntime, sync);
-                setMaxBurnTime(maxburntime, sync);
-                break;
-        }
-        markDirty(sync);
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        NBTTagCompound compound = pkt.getNbtCompound();
+        energy = compound.getInteger("energy");
+        burnTimeLeft = compound.getInteger("burnTime");
+        maxBurnTimeLeft = compound.getInteger("maxBurnTime");
+        sync();
     }
-
-//    @Override
-//    public void sync(PacketTypes.CONFIG packet, Object message, boolean sync) {
-//        switch (packet) {
-//            case GENERATOR_GENERATION:
-//                int generation = (int) message;
-//                setGeneration(generation, sync);
-//                break;
-//        }
-//        markDirty(sync);
-//    }
-
 
     @Override
     public long getStoredPower() {
