@@ -55,7 +55,7 @@ public class GeneratorContainerGui extends GuiContainer {
         int l = getScaled(te.getMaxEnergyStored(), te.getEnergyStored(), 43);
         drawTexturedModalRect(guiLeft + 52 + 61, guiTop + 5 + (43 - l), 76, (43 - l), 10, l);
         l = getScaled(te.getMaxBurnTime(), te.getBurnTime(), 72);
-        drawTexturedModalRect(guiLeft + 52 + 2 + (72 - l), guiTop + 56 - 4, 0, 56, l, 4);
+        drawTexturedModalRect(guiLeft + 52 + 2, guiTop + 56 - 4, 0, 56, l, 4);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class GeneratorContainerGui extends GuiContainer {
 
         //energy bar
         if (isPointInRegion(52 + 61, 5, 10, 43, mouseX, mouseY))
-            drawHoveringText(Arrays.asList(new String[]{"Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/" + TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE"}), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(Arrays.asList(new String[]{"Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/", TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE"}), mouseX - guiLeft, mouseY - guiTop);
 
         //progress bar
         if (isPointInRegion(52 + 2, 56 - 4, 72, 4, mouseX, mouseY))
