@@ -8,7 +8,6 @@ import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -16,7 +15,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 @Mod(modid = ModUtil.MOD_ID,
         name = ModUtil.NAME,
@@ -34,7 +32,7 @@ public class RainControl {
     public static RainControl instance;
 
     public static final PacketTypes.CONFIG[] configPackets = new PacketTypes.CONFIG[]{
-            PacketTypes.CONFIG.GENERATOR_GENERATION
+            PacketTypes.CONFIG.GENERATION
     };
     @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
     public static CommonProxy proxy;

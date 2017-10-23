@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 public class PacketConfig implements IMessage {
 
     private PacketTypes.CONFIG[] types;
-    private int generator_generation;
+    private int generation;
 
     /**
      * Required objects are in the PacketTypes descriptions.
@@ -31,13 +31,16 @@ public class PacketConfig implements IMessage {
         int index = 0;
         for (PacketTypes.CONFIG type : types) {
             switch (type) {
-                case GENERATOR_GENERATION:
-                    generator_generation = (int) objects[index];
+                case GENERATION:
+                    generation = (int) objects[index];
                     index += 1;
                     continue;
 
             }
         }
+    }
+
+    public PacketConfig() {
     }
 
     private static String intArrayToString(int[] ints) {
@@ -64,8 +67,8 @@ public class PacketConfig implements IMessage {
         ));
         for (PacketTypes.CONFIG type : types) {
             switch (type) {
-                case GENERATOR_GENERATION:
-                    generator_generation = buf.readInt();
+                case GENERATION:
+                    generation = buf.readInt();
                     continue;
 
             }
@@ -80,8 +83,8 @@ public class PacketConfig implements IMessage {
         buf.writeCharSequence(sequence, Charset.defaultCharset());
         for (PacketTypes.CONFIG type : types) {
             switch (type) {
-                case GENERATOR_GENERATION:
-                    buf.writeInt(generator_generation);
+                case GENERATION:
+                    buf.writeInt(generation);
                     continue;
             }
 
@@ -109,9 +112,9 @@ public class PacketConfig implements IMessage {
         private void handle(com.timotheteus.raincontrol.packets.PacketConfig message, MessageContext ctx) {
             for (PacketTypes.CONFIG type : message.types) {
                 switch (type) {
-                    case GENERATOR_GENERATION:
+                    case GENERATION:
                         Minecraft.getMinecraft().addScheduledTask(() -> {
-                            Config.generatorProduce = message.generator_generation;
+                            Config.generatorProduce = message.generation;
                         });
                         continue;
                 }
