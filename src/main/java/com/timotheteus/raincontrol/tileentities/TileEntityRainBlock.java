@@ -1,6 +1,5 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.TextHelper;
 import com.timotheteus.raincontrol.util.WorldHelper;
@@ -14,6 +13,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -197,7 +198,6 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
         return null;
     }
 
-    @NotNull
     @Override
     public NBTTagCompound getUpdateTag() {
         NBTTagCompound compound = getTileData();
@@ -205,6 +205,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
         return compound;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         NBTTagCompound compound = pkt.getNbtCompound();

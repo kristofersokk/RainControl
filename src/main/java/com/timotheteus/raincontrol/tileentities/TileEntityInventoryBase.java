@@ -1,6 +1,5 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.gui.CustomSlot;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.CustomItemStackHandler;
@@ -63,7 +62,6 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
         }
     }
 
-    @NotNull
     @Override
     public ItemStack removeStackFromSlot(int index) {
         itemStackHandler.setStackInSlot(index, EMPTY.copy());

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler {
 
-    private static int packetID = 3;
+    private static int packetID = 0;
 
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(ModUtil.MOD_ID);
 

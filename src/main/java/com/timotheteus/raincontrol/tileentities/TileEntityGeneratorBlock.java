@@ -1,6 +1,5 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.sun.istack.internal.NotNull;
 import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.gui.CustomSlot;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
@@ -13,6 +12,8 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.Arrays;
@@ -107,7 +108,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
     }
 
-    @NotNull
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
@@ -199,7 +199,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         return maxBurnTimeLeft;
     }
 
-    @NotNull
     @Override
     public NBTTagCompound getUpdateTag() {
         NBTTagCompound compound = getTileData();
@@ -209,6 +208,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         return compound;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         NBTTagCompound compound = pkt.getNbtCompound();

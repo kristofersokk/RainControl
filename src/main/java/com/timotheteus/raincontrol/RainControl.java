@@ -1,8 +1,6 @@
 package com.timotheteus.raincontrol;
 
-import com.timotheteus.raincontrol.config.Config;
 import com.timotheteus.raincontrol.packets.PacketConfig;
-import com.timotheteus.raincontrol.packets.PacketTypes;
 import com.timotheteus.raincontrol.proxy.CommonProxy;
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.entity.Entity;
@@ -20,8 +18,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
         name = ModUtil.NAME,
         version = ModUtil.VERSION,
         acceptedMinecraftVersions = "[1.12, 1.13)",
-        dependencies = "required-after:redstoneflux;" +
-                "required-after:tesla;"
+        dependencies = "after:redstoneflux;" +
+                "after:tesla;"
 )
 @Mod.EventBusSubscriber
 public class RainControl {
@@ -31,9 +29,6 @@ public class RainControl {
 	@Mod.Instance(ModUtil.MOD_ID)
     public static RainControl instance;
 
-    public static final PacketTypes.CONFIG[] configPackets = new PacketTypes.CONFIG[]{
-            PacketTypes.CONFIG.GENERATION
-    };
     @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
     public static CommonProxy proxy;
 
@@ -59,7 +54,7 @@ public class RainControl {
     public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
         Entity entity = event.player;
         if (entity instanceof EntityPlayerMP) {
-            new PacketConfig(configPackets, Config.generatorProduce).sendTo((EntityPlayerMP) entity);
+            new PacketConfig().sendTo((EntityPlayerMP) entity);
         }
     }
 
