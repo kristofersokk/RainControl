@@ -33,27 +33,24 @@ public class RainControl {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(proxy);
-        MinecraftForge.EVENT_BUS.register(this);
         proxy.preInit(event);
     }
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
         proxy.init(event);
     }
-
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event){
         proxy.postInit(event);
     }
 
 
-    @SubscribeEvent
-    public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
-        Entity entity = event.player;
-        if (entity instanceof EntityPlayerMP) {
-            new PacketConfig().sendTo((EntityPlayerMP) entity);
-        }
-    }
+//    @SubscribeEvent
+//    public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
+//        Entity entity = event.player;
+//        if (entity instanceof EntityPlayerMP) {
+//            new PacketConfig().sendTo((EntityPlayerMP) entity);
+//        }
+//    }
 
 }

@@ -21,14 +21,6 @@ group = "com.timotheteus.raincontrol"
 archivesBaseName = 'raincontrol'
 
 
-//ext.configFile = file "build.txt"
-
-//configFile.withReader {
-//    def prop = new Properties()
-//    prop.load(it)
-//    project.ext.config = new ConfigSlurper().parse prop
-//}
-
 minecraft {
     version = "${forge_version}"
     runDir = "run"
@@ -39,7 +31,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171021"
+    mappings = "snapshot_20171025"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

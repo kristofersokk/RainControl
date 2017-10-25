@@ -14,7 +14,6 @@ interface Energy extends IEnergyStorage, ITeslaHolder {
 
     interface Producer extends Energy, ITeslaProducer, IEnergyProvider {
         int getGeneration();
-        void setGeneration(int a);
     }
 
     interface Battery extends Energy, Consumer, Producer {

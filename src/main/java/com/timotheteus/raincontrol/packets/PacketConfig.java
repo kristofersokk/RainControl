@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.packets;
 
-import com.timotheteus.raincontrol.config.Config;
+import com.timotheteus.raincontrol.config.ConfigHandler;
 import com.timotheteus.raincontrol.handlers.PacketHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketConfig implements IMessage {
 
-    private int generation = Config.generatorProduce;
+    private int generation = ConfigHandler.General.generatorGeneration;
 
     public PacketConfig() {
     }
@@ -48,7 +48,7 @@ public class PacketConfig implements IMessage {
         @SideOnly(Side.CLIENT)
         private void handle(com.timotheteus.raincontrol.packets.PacketConfig message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
-                Config.generatorProduceNew = message.generation;
+//                ConfigHandler.generatorProduceNew = message.generation;
             });
         }
     }

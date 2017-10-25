@@ -6,12 +6,8 @@
       "all": "raincontrol:common/unknown"
     },
     "variants": {
-      "normal": [
-        {}
-      ],
-      "inventory": [
-        {}
-      ]
+      "normal": [{}],
+      "inventory": [{}]
     }
   }
 }

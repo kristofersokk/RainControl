@@ -1,6 +1,6 @@
 {
   "forge_marker": 1,
-  "parent": "raincontrol:block/block",
+  "parent": "raincontrol:block",
   "textures": {
     "all": "raincontrol:blocks/generatorblock"
   }
