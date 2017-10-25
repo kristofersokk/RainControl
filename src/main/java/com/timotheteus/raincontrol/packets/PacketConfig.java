@@ -11,8 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.nio.charset.Charset;
-
 public class PacketConfig implements IMessage {
 
     private int generation = Config.generatorProduce;
@@ -50,7 +48,7 @@ public class PacketConfig implements IMessage {
         @SideOnly(Side.CLIENT)
         private void handle(com.timotheteus.raincontrol.packets.PacketConfig message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
-                Config.generatorProduce = message.generation;
+                Config.generatorProduceNew = message.generation;
             });
         }
     }

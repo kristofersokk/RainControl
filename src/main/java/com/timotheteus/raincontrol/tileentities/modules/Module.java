@@ -1,21 +1,17 @@
 package com.timotheteus.raincontrol.tileentities.modules;
 
-import net.minecraft.tileentity.TileEntity;
-
 public abstract class Module {
 
     private int tick = 0;
 
     /**
-     * empty
+     * @return needs sync
      */
-    Module(TileEntity te) {
-    }
-
-    public void tick() {
+    public boolean tick() {
         tick++;
-        if (tick >= 1080)
+        if (tick >= 32400)
             tick = 0;
+        return false;
     }
 
     boolean atTick(int a) {

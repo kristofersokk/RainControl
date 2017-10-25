@@ -24,13 +24,11 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 @Mod.EventBusSubscriber
 public class RainControl {
 
-    //TODO is config syncing really working? --WIP
-	
 	@Mod.Instance(ModUtil.MOD_ID)
     public static RainControl instance;
 
     @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
-    public static CommonProxy proxy;
+    private static CommonProxy proxy;
 
 
     @Mod.EventHandler

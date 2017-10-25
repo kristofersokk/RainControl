@@ -9,14 +9,18 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@Mod.EventBusSubscriber
 public class Items {
 
     public static ItemRainBlock blockRain_item;
-    public static ItemBlockBase blockFurnace_item;
+    private static ItemBlockBase blockFurnace_item;
 
+    @SubscribeEvent
     public static void init(RegistryEvent.Register<Item> event) {
         blockRain_item = new ItemRainBlock(Blocks.blockRain);
         blockFurnace_item = new ItemBlockBase(Blocks.blockGenerator);

@@ -10,8 +10,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GeneratorContainerGui extends GuiContainer {
@@ -21,7 +22,7 @@ public class GeneratorContainerGui extends GuiContainer {
 
     private static final ResourceLocation inventory = new ResourceLocation(ModUtil.MOD_ID, "textures/gui/inventory.png");
     private static final ResourceLocation generator = new ResourceLocation(ModUtil.MOD_ID, "textures/gui/generator/generator.png");
-    private TileEntityGeneratorBlock te;
+    private final TileEntityGeneratorBlock te;
 
     public GeneratorContainerGui(TileEntityGeneratorBlock tileEntity, ContainerGenerator container) {
         super(container);
@@ -54,7 +55,7 @@ public class GeneratorContainerGui extends GuiContainer {
         drawTexturedModalRect(guiLeft + 52, guiTop, 0, 0, 76, 56);
         int l = getScaled(te.getMaxEnergyStored(), te.getEnergyStored(), 43);
         drawTexturedModalRect(guiLeft + 52 + 61, guiTop + 5 + (43 - l), 76, (43 - l), 10, l);
-        l = getScaled(te.getMaxBurnTime(), te.getBurnTime(), 72);
+        l = getScaled(te.maxBurnTimeLeft, te.burnTimeLeft, 72);
         drawTexturedModalRect(guiLeft + 52 + 2, guiTop + 56 - 4, 0, 56, l, 4);
     }
 
@@ -70,11 +71,11 @@ public class GeneratorContainerGui extends GuiContainer {
 
         //energy bar
         if (isPointInRegion(52 + 61, 5, 10, 43, mouseX, mouseY))
-            drawHoveringText(Arrays.asList(new String[]{"Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/", TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE"}), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(new ArrayList<String>(Arrays.asList("Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/", TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE")), mouseX - guiLeft, mouseY - guiTop);
 
         //progress bar
         if (isPointInRegion(52 + 2, 56 - 4, 72, 4, mouseX, mouseY))
-            drawHoveringText(Arrays.asList(new String[]{"Burn time:", TextHelper.getTimeText(te.getBurnTime()) + "/" + TextHelper.getTimeText(te.getMaxBurnTime())}), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(new ArrayList<String>(Arrays.asList("Burn time:", TextHelper.getTimeText(te.burnTimeLeft) + "/" + TextHelper.getTimeText(te.maxBurnTimeLeft))), mouseX - guiLeft, mouseY - guiTop);
 
 //        renderHoveredToolTip(mouseX, mouseY);
 

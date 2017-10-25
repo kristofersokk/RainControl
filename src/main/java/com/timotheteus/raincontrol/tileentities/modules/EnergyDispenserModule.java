@@ -2,7 +2,6 @@ package com.timotheteus.raincontrol.tileentities.modules;
 
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.timotheteus.raincontrol.tileentities.Property;
-import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
@@ -17,13 +16,12 @@ import java.util.Map;
 
 public class EnergyDispenserModule extends Module {
 
-    private TileEntity te;
-    private int maxOutput;
-    private ArrayList<TileEntity> neighbours;
-    private Map<TileEntity, EnumFacing> neighbourFaces;
+    private final TileEntity te;
+    private final int maxOutput;
+    private final ArrayList<TileEntity> neighbours;
+    private final Map<TileEntity, EnumFacing> neighbourFaces;
 
     public EnergyDispenserModule(TileEntity te, int maxOutput) {
-        super(te);
         this.te = te;
         this.maxOutput = maxOutput;
         neighbours = new ArrayList<>();
@@ -33,15 +31,15 @@ public class EnergyDispenserModule extends Module {
 
 
     @Override
-    public void tick() {
+    public boolean tick() {
         super.tick();
-        if (atTick(4)) {
+        if (atTick(8)) {
             refreshNeighbours();
         }
-        disperseEnergy();
+        return disperseEnergy();
     }
 
-    private void disperseEnergy() {
+    private boolean disperseEnergy() {
         boolean sync = false;
         IEnergyStorage storage = (IEnergyStorage) this.te;
         if (storage.getEnergyStored() > 0)
@@ -49,8 +47,8 @@ public class EnergyDispenserModule extends Module {
                 for (TileEntity te : neighbours)
                     if (sendEnergyTo(te, neighbourFaces.get(te)))
                         sync = true;
-        if (sync)
-            ((TileEntityBase) te).markDirty(true);
+        return sync;
+//            ((TileEntityBase) te).markDirty(true);
     }
 
     /**

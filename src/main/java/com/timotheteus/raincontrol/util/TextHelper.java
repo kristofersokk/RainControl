@@ -9,7 +9,6 @@ public class TextHelper {
 
     /**
      * usually called on server
-     * @param player
      */
     public static void chatMessageServer(EntityPlayer player, String message){
         try {
@@ -32,15 +31,15 @@ public class TextHelper {
         int len = b.length();
         int mod = Math.floorMod(len, 3);
         int commas = Math.floorDiv(len - 1, 3);
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (mod == 0) mod = 3;
-        result += b.substring(0, mod);
+        result.append(b.substring(0, mod));
         if (commas > 0) {
             for (int i = 0; i < commas; i++) {
-                result += "," + b.substring(i * 3 + mod, i * 3 + mod + 3);
+                result.append(",").append(b.substring(i * 3 + mod, i * 3 + mod + 3));
             }
         }
-        return result;
+        return result.toString();
     }
 
     /**

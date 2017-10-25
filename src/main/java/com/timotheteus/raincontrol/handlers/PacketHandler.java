@@ -15,7 +15,7 @@ public class PacketHandler {
     public PacketHandler() {
     }
 
-    public static int nextID(){
+    private static int nextID(){
         return packetID++;
     }
 

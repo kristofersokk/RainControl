@@ -26,11 +26,9 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
             CapabilityEnergy.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
     };
-    private static Integer generation = Config.generatorProduce;
-
     private int energy;
-    private int maxBurnTimeLeft;
-    private int burnTimeLeft;
+    public int maxBurnTimeLeft;
+    public int burnTimeLeft;
 
     public TileEntityGeneratorBlock() {
         super(new ModuleTypes[]{
@@ -46,15 +44,20 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
     @Override
     public void update() {
         if (!world.isRemote) {
-            boolean sync = false;
+            int prevEnergy = energy;
+
             super.update();
+
+            boolean sync;
+            sync = super.sync;
 
             //burning
             if (burnTimeLeft > 0) {
                 if (energy != maxStorage) {
                     burnTimeLeft--;
                     if (changeEnergy(getGeneration(), false))
-                        sync = true;
+                        if (prevEnergy != energy)
+                            sync = true;
                 }
             } else {
                 //not burning
@@ -70,15 +73,13 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
                     }
                 }
             }
-
-            if (sync && atTick(10))
+            if (sync)
                 markDirty(true);
 
         } else {
             //client-side
             if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
                 burnTimeLeft--;
-                changeEnergy(getGeneration(), false);
             }
         }
 
@@ -119,7 +120,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
             if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
                 return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemStackHandler);
             } else {
-                return (T) this;
+                return capability.cast((T)this);
             }
         return super.getCapability(capability, facing);
     }
@@ -191,14 +192,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         markDirty(sync);
     }
 
-    public int getBurnTime() {
-        return burnTimeLeft;
-    }
-
-    public int getMaxBurnTime() {
-        return maxBurnTimeLeft;
-    }
-
     @Override
     public NBTTagCompound getUpdateTag() {
         NBTTagCompound compound = getTileData();
@@ -206,6 +199,14 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         compound.setInteger("burnTime", burnTimeLeft);
         compound.setInteger("maxBurnTime", maxBurnTimeLeft);
         return compound;
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        energy = tag.getInteger("energy");
+        burnTimeLeft = tag.getInteger("burnTime");
+        maxBurnTimeLeft = tag.getInteger("maxBurnTime");
+        super.handleUpdateTag(tag);
     }
 
     @SideOnly(Side.CLIENT)
@@ -228,8 +229,14 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         return maxStorage;
     }
 
+    @Override
     public int getGeneration() {
-        return generation;
+        return Config.generatorProduceNew == null ? Config.generatorProduce : Config.generatorProduceNew;
+    }
+
+    @Override
+    public void setGeneration(int a) {
+        Config.generatorProduce = a;
     }
 
     @Override

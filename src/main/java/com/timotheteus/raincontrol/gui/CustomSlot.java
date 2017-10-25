@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 
 public class CustomSlot extends SlotItemHandler {
 
-    StackFilter filter;
+    private final StackFilter filter;
 
     public CustomSlot(IItemHandler handler, int index, int xPosition, int yPosition, @Nullable StackFilter filter) {
         super(handler, index, xPosition, yPosition);

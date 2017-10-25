@@ -68,7 +68,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
                     TextHelper.chatMessageServer(player, "Needs to see the sky");
                 }
             }
-        } catch (NullPointerException e) {//activated by redstone
+        } catch (NullPointerException e) {
             //redstone activation
             if (!world.isRemote) {
                 if (cooldown == 0){
@@ -86,7 +86,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
                             }
                         } else {
                             TextHelper.chatMessageServer(players, "Not enough energy. Energy: " + TextHelper.getEnergyText(energy) + " FE");
-                            cooldown = 20;
+                            cooldown = 10;
                         }
                     } else {
                         TextHelper.chatMessageServer(player, "Needs to see the sky");

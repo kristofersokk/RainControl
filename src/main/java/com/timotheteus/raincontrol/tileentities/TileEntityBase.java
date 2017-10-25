@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public abstract class TileEntityBase extends TileEntity implements ITickable {
 
     private int tick = 0;
-    private Module[] modules;
+    private final Module[] modules;
 
     TileEntityBase(ModuleTypes[] moduleTypes, Object[][] objects) {
         Module[] modules = new Module[moduleTypes.length];
@@ -24,19 +24,22 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
             switch (module) {
                 case ENERGY_DISPENSER:
                     modules[i] = new EnergyDispenserModule(this, (int) objects[i][0]);
-                    continue;
             }
         }
         this.modules = modules;
     }
 
+    boolean sync = false;
+
     @Override
     public void update() {
+        sync = false;
         for (Module module : modules) {
-            module.tick();
+            if (module.tick())
+                sync = true;
         }
         tick++;
-        if (tick >= 1080)
+        if (tick >= 32400)
             tick = 0;
     }
 
@@ -46,19 +49,19 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
         }
     }
 
-    protected boolean atTick(int a) {
+    boolean atTick(int a) {
         return Math.floorMod(tick, a) == 0;
     }
 
 
-    public void markDirty(boolean sync) {
+    void markDirty(boolean sync) {
         super.markDirty();
         if (sync) {
             sync();
         }
     }
 
-    public void sync() {
+    void sync() {
         IBlockState state = world.getBlockState(pos);
         world.notifyBlockUpdate(pos, state, state, 3);
     }

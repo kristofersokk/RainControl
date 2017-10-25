@@ -7,12 +7,14 @@ import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public abstract interface Energy extends IEnergyStorage, ITeslaHolder {
+interface Energy extends IEnergyStorage, ITeslaHolder {
 
     interface Consumer extends Energy, ITeslaConsumer, IEnergyReceiver {
     }
 
     interface Producer extends Energy, ITeslaProducer, IEnergyProvider {
+        int getGeneration();
+        void setGeneration(int a);
     }
 
     interface Battery extends Energy, Consumer, Producer {

@@ -6,7 +6,7 @@ import net.minecraft.item.ItemBlock;
 
 public class ItemBlockBase extends ItemBlock {
 
-    private String id;
+    private final String id;
 
     public ItemBlockBase(Block block) {
         super(block);

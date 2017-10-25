@@ -3,18 +3,18 @@ package com.timotheteus.raincontrol.util;
 import com.timotheteus.raincontrol.gui.CustomSlot;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class CustomItemStackHandler extends ItemStackHandler {
 
-    private CustomSlot.StackFilter filter;
+    private final CustomSlot.StackFilter filter;
 
-    protected CustomItemStackHandler(int size, CustomSlot.StackFilter filter) {
+    protected CustomItemStackHandler(int size, @Nullable CustomSlot.StackFilter filter) {
         super(size);
         this.filter = filter;
     }
@@ -52,24 +52,6 @@ public class CustomItemStackHandler extends ItemStackHandler {
     }
 
     @Override
-    public void validateSlotIndex(int slot) {
-        super.validateSlotIndex(slot);
-    }
-
-    public NonNullList<ItemStack> getAllSlots() {
-        return stacks;
-    }
-
-    @Override
-    public void setSize(int size) {
-    }
-
-    @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        stacks.set(slot, stack.copy());
-    }
-
-    @Override
     public int getSlots() {
         return stacks.size();
     }
@@ -80,54 +62,78 @@ public class CustomItemStackHandler extends ItemStackHandler {
         return stacks.get(slot);
     }
 
-    @Nonnull
+//    @Nonnull
+//    @Override
+//    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+//        ItemStack local = getStackInSlot(slot);
+//        if (filter.isValid(stack) && (local.isEmpty() || ItemStack.areItemsEqual(local, stack))) {
+//            int stacklimit = getStackLimit(slot, stack);
+//            if (local.getCount() == stacklimit) {
+//                return stack;
+//            } else if (stack.getCount() + local.getCount() <= stacklimit) {
+//                if (!simulate) {
+//                    ItemStack newStack = stack.copy();
+//                    newStack.setCount(stack.getCount() + local.getCount());
+//                    setStackInSlot(slot, newStack);
+//                }
+//                return ItemStack.EMPTY;
+//            } else {//there's a remainder
+//                ItemStack newStack = local.copy();
+//                int remainder = local.getMaxStackSize() - local.getCount();
+//                local.setCount(local.getMaxStackSize());
+//                if (!simulate)
+//                    setStackInSlot(slot, local);
+//                newStack.setCount(remainder);
+//                return newStack;
+//            }
+//        }
+//        return stack;
+//    }
+
+    public Iterable<? extends ItemStack> getAllSlots() {
+        return stacks;
+    }
+
     @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        ItemStack local = getStackInSlot(slot);
-        if (filter.isValid(stack) && (local.isEmpty() || ItemStack.areItemsEqual(local, stack))) {
-            int stacklimit = getStackLimit(slot, stack);
-            if (local.getCount() == stacklimit) {
-                return stack;
-            } else if (stack.getCount() + local.getCount() <= stacklimit) {
-                if (!simulate) {
-                    ItemStack newStack = stack.copy();
-                    newStack.setCount(stack.getCount() + local.getCount());
-                    setStackInSlot(slot, newStack);
-                }
-                return ItemStack.EMPTY;
-            } else {//there's a remainder
-                ItemStack newStack = local.copy();
-                int remainder = local.getMaxStackSize() - local.getCount();
-                if (!simulate)
-                    local.setCount(local.getMaxStackSize());
-                newStack.setCount(remainder);
-                return newStack;
-            }
-        }
-        return stack;
+    public void validateSlotIndex(int slot) {
+        super.validateSlotIndex(slot);
+    }
+
+    private boolean filterAllows(ItemStack stack){
+        return filter == null || filter.isValid(stack);
     }
 
     @Nonnull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         ItemStack local = getStackInSlot(slot);
-        ItemStack newStack = local.copy();
-        ItemStack newLocal = local.copy();
-        if (local.getCount() == 0 || amount == 0) {
-            return ItemStack.EMPTY;
-        } else if (amount >= local.getCount()) {
-            newStack.setCount(local.getCount());
-            if (!simulate)
-                setStackInSlot(slot, ItemStack.EMPTY.copy());
-            return newStack;
-        } else {
-            newStack.setCount(amount);
-            if (!simulate)
-                newLocal.setCount(local.getCount() - amount);
-            setStackInSlot(slot, newLocal);
-            return newStack;
-        }
+        if (local.isEmpty() && !stack.isEmpty() && !filterAllows(stack))
+            return stack;
+        return super.insertItem(slot, stack, simulate);
     }
+
+
+//    @Nonnull
+//    @Override
+//    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+//        ItemStack local = getStackInSlot(slot);
+//        ItemStack newStack = local.copy();
+//        ItemStack newLocal = local.copy();
+//        if (local.getCount() == 0 || amount == 0) {
+//            return ItemStack.EMPTY;
+//        } else if (amount >= local.getCount()) {
+//            newStack.setCount(local.getCount());
+//            if (!simulate)
+//                setStackInSlot(slot, ItemStack.EMPTY.copy());
+//            return newStack;
+//        } else {
+//            newStack.setCount(amount);
+//            newLocal.setCount(local.getCount() - amount);
+//            if (!simulate)
+//                setStackInSlot(slot, newLocal);
+//            return newStack;
+//        }
+//    }
 
     @Override
     public int getSlotLimit(int slot) {
@@ -138,4 +144,6 @@ public class CustomItemStackHandler extends ItemStackHandler {
     protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
         return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
     }
+
+
 }

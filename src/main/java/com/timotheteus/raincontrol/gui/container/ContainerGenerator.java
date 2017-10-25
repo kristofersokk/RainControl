@@ -3,7 +3,6 @@ package com.timotheteus.raincontrol.gui.container;
 import com.timotheteus.raincontrol.gui.CustomSlot;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -14,12 +13,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public class ContainerGenerator extends Container {
 
-    private TileEntityGeneratorBlock te;
-    public int OWN_SIZE = 1;
-    public int inventoryStart = OWN_SIZE;
-    public int inventoryEnd = inventoryStart + 26;
-    public int hotbarStart = inventoryEnd + 1;
-    public int hotbarEnd = hotbarStart + 8;
+    private final TileEntityGeneratorBlock te;
+    private final int OWN_SIZE = 1;
+    private final int inventoryStart = OWN_SIZE;
+    private final int inventoryEnd = inventoryStart + 26;
+    private final int hotbarStart = inventoryEnd + 1;
+    private final int hotbarEnd = hotbarStart + 8;
 
     public ContainerGenerator(IInventory playerInventory, TileEntityGeneratorBlock te) {
         this.te = te;
@@ -61,11 +60,6 @@ public class ContainerGenerator extends Container {
             slotIndex++;
             x += 18;
         }
-    }
-
-    @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

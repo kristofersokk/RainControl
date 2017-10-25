@@ -67,10 +67,9 @@ public class BlockRain extends BlockBase implements ITileEntityProvider{
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-    {
-        if (willHarvest) return true; //If it will harvest, delay deletion of the block until after getDrops
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        //If it will harvest, delay deletion of the block until after getDrops
+        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
     /**

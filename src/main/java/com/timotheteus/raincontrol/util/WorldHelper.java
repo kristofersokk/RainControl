@@ -38,7 +38,7 @@ public class WorldHelper {
         return inRange;
     }
 
-    public static double distanceEuclidean(double x, double y, double z){
+    private static double distanceEuclidean(double x, double y, double z){
         return Math.sqrt(Math.pow(x, 2d) + Math.pow(y, 2d) + Math.pow(z, 2d));
     }
 }

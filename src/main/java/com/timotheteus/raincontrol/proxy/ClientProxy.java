@@ -35,6 +35,7 @@ public class ClientProxy extends CommonProxy {
         super.postInit(event);
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void registerModels(ModelRegistryEvent event){
         Blocks.initModels();

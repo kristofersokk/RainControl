@@ -13,11 +13,11 @@ import javax.annotation.Nullable;
 public class TileEntityInventoryBase extends TileEntityBase implements Inventory, IInventory {
 
     private static final int SIZE = 1;
-    private static ItemStack EMPTY = ItemStack.EMPTY;
-    CustomItemStackHandler itemStackHandler;
-    private CustomSlot.StackFilter filter;
+    private static final ItemStack EMPTY = ItemStack.EMPTY;
+    final CustomItemStackHandler itemStackHandler;
+    private final CustomSlot.StackFilter filter;
 
-    public TileEntityInventoryBase(ModuleTypes[] moduleTypes, Object[][] objects, @Nullable CustomSlot.StackFilter filter) {
+    TileEntityInventoryBase(ModuleTypes[] moduleTypes, Object[][] objects, @Nullable CustomSlot.StackFilter filter) {
         super(moduleTypes, objects);
         itemStackHandler = new CustomItemStackHandler(SIZE, filter) {
             @Override
@@ -104,11 +104,7 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        if (filter != null) {
-            return filter.isValid(stack);
-        } else {
-            return true;
-        }
+        return filter == null || filter.isValid(stack);
     }
 
     @Override
@@ -142,8 +138,4 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
         return false;
     }
 
-    @Override
-    public ITextComponent getDisplayName() {
-        return super.getDisplayName();
-    }
 }
