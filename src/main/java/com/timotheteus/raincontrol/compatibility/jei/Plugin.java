@@ -7,7 +7,7 @@ import mezz.jei.api.JEIPlugin;
 import net.minecraft.item.ItemStack;
 
 @JEIPlugin
-class Plugin implements IModPlugin {
+public class Plugin implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {

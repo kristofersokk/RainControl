@@ -13,15 +13,9 @@ public class ConfigHandler {
 //    public static Integer generatorProduce = 0;
 //    public static Integer generatorProduceNew;
 
-    public static final General GENERAL = new General();
-
-    public static class General {
-
-        @Config.Comment("The FE output of the generator")
-        @Config.RangeInt(min = 0)
-        public static Integer generatorGeneration = 40;
-
-    }
+    @Config.Comment("The FE output of the generator")
+    @Config.RangeInt(min = 0)
+    public static int generatorGeneration = 40;
 
 //    public static void readConfig() {
 //        Configuration cfg = CommonProxy.config;

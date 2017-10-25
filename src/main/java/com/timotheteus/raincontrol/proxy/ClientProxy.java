@@ -14,8 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
-@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber
 public class ClientProxy extends CommonProxy {
 
     @Override
@@ -35,7 +34,6 @@ public class ClientProxy extends CommonProxy {
         super.postInit(event);
     }
 
-    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void registerModels(ModelRegistryEvent event){
         Blocks.initModels();

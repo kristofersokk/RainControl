@@ -231,7 +231,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int getGeneration() {
-        return ConfigHandler.General.generatorGeneration;
+        return ConfigHandler.generatorGeneration;
     }
 
 

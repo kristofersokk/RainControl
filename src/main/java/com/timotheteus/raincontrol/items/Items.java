@@ -1,7 +1,5 @@
 package com.timotheteus.raincontrol.items;
 
-import com.timotheteus.raincontrol.block.BlockGenerator;
-import com.timotheteus.raincontrol.block.BlockRain;
 import com.timotheteus.raincontrol.block.Blocks;
 import com.timotheteus.raincontrol.block.ItemBlockBase;
 import com.timotheteus.raincontrol.items.itemblocks.ItemRainBlock;
@@ -18,24 +16,24 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Items {
 
     public static ItemRainBlock blockRain_item;
-    private static ItemBlockBase blockFurnace_item;
+    public static ItemBlockBase blockgenerator_item;
 
     @SubscribeEvent
     public static void init(RegistryEvent.Register<Item> event) {
         blockRain_item = new ItemRainBlock(Blocks.blockRain);
-        blockFurnace_item = new ItemBlockBase(Blocks.blockGenerator);
+        blockgenerator_item = new ItemBlockBase(Blocks.blockGenerator);
 
         event.getRegistry().registerAll(
                 blockRain_item,
-                blockFurnace_item
+                blockgenerator_item
         );
     }
 
     @SideOnly(Side.CLIENT)
     public static void initModels() {
 //        blockRain.initModel();
-        registerItemBlockModel(new ItemRainBlock(new BlockRain()));
-        registerItemBlockModel(new ItemBlockBase(new BlockGenerator()));
+        registerItemBlockModel(blockRain_item);
+        registerItemBlockModel(blockgenerator_item);
     }
 
     @SideOnly(Side.CLIENT)

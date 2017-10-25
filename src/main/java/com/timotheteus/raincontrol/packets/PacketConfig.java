@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketConfig implements IMessage {
 
-    private int generation = ConfigHandler.General.generatorGeneration;
+    private int generation = ConfigHandler.generatorGeneration;
 
     public PacketConfig() {
     }

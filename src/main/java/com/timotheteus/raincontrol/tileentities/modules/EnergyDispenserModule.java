@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class EnergyDispenserModule extends Module {
 
+    //TODO add advanced dispersal, atm to one machine
+
     private final TileEntity te;
     private final int maxOutput;
     private final ArrayList<TileEntity> neighbours;

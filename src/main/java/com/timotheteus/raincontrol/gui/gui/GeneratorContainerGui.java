@@ -71,11 +71,11 @@ public class GeneratorContainerGui extends GuiContainer {
 
         //energy bar
         if (isPointInRegion(52 + 61, 5, 10, 43, mouseX, mouseY))
-            drawHoveringText(new ArrayList<String>(Arrays.asList("Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/", TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE")), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(new ArrayList<>(Arrays.asList("Energy:", TextHelper.getEnergyText(te.getEnergyStored()) + "/", TextHelper.getEnergyText(te.getMaxEnergyStored()) + " FE")), mouseX - guiLeft, mouseY - guiTop);
 
         //progress bar
         if (isPointInRegion(52 + 2, 56 - 4, 72, 4, mouseX, mouseY))
-            drawHoveringText(new ArrayList<String>(Arrays.asList("Burn time:", TextHelper.getTimeText(te.burnTimeLeft) + "/" + TextHelper.getTimeText(te.maxBurnTimeLeft))), mouseX - guiLeft, mouseY - guiTop);
+            drawHoveringText(new ArrayList<>(Arrays.asList("Burn time:", TextHelper.getTimeText(te.burnTimeLeft) + "/" + TextHelper.getTimeText(te.maxBurnTimeLeft))), mouseX - guiLeft, mouseY - guiTop);
 
 //        renderHoveredToolTip(mouseX, mouseY);
 

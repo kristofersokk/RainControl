@@ -2,6 +2,7 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.RainControl;
 import com.timotheteus.raincontrol.handlers.GuiHandler;
+import com.timotheteus.raincontrol.items.Items;
 import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.Names;
@@ -11,6 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -19,6 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class BlockGenerator extends BlockBase implements ITileEntityProvider {
 
@@ -41,6 +44,11 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
         }
         playerIn.openGui(RainControl.instance, GuiHandler.GUY_FURNACEBLOCK, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return Items.blockgenerator_item;
     }
 
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {

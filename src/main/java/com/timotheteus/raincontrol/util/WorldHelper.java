@@ -16,7 +16,7 @@ public class WorldHelper {
 
     public static ArrayList<EntityPlayer> getPlayersWithinRange(World world, BlockPos pos, double range, Shape shape){
         List<EntityPlayer> allPlayers = world.playerEntities;
-        ArrayList<EntityPlayer> inRange = new ArrayList<EntityPlayer>();
+        ArrayList<EntityPlayer> inRange = new ArrayList<>();
 
         player:
         for (EntityPlayer player : allPlayers){

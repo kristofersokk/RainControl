@@ -1,18 +1,13 @@
 package com.timotheteus.raincontrol;
 
-import com.timotheteus.raincontrol.packets.PacketConfig;
 import com.timotheteus.raincontrol.proxy.CommonProxy;
 import com.timotheteus.raincontrol.util.ModUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 @Mod(modid = ModUtil.MOD_ID,
         name = ModUtil.NAME,
@@ -33,6 +28,7 @@ public class RainControl {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(proxy);//NB! Needed for models to be registered
         proxy.preInit(event);
     }
     @Mod.EventHandler
