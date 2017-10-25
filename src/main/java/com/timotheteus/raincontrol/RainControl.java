@@ -18,8 +18,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
         name = ModUtil.NAME,
         version = ModUtil.VERSION,
         acceptedMinecraftVersions = "[1.12, 1.13)",
-        dependencies = "after:redstoneflux;" +
-                "after:tesla;"
+        dependencies = "required-after:redstoneflux;" +
+                "required-after:tesla;"
 )
 @Mod.EventBusSubscriber
 public class RainControl {
