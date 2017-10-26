@@ -10,31 +10,57 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = ModUtil.MOD_ID)
 public class ConfigHandler {
 
-//    public static Integer generatorProduce = 0;
-//    public static Integer generatorProduceNew;
+    public static RainBlock rainBlock = new RainBlock();
+    public static Generator generator = new Generator();
 
-    @Config.Comment("The FE output of the generator")
-    @Config.RangeInt(min = 0)
-    public static int generatorGeneration = 40;
+    //TODO use FE config numbers instead of fixed numbers
 
-//    public static void readConfig() {
-//        Configuration cfg = CommonProxy.config;
-//        try {
-//            cfg.load();
-//            initGeneralConfig(cfg);
-//        } catch (Exception e) {
-//            ModUtil.LOGGER.log(java.util.logging.Level.CONFIG, "Problem loading config file!", e);
-//        } finally {
-//            if (cfg.hasChanged())
-//                cfg.save();
-//        }
-//    }
+    //TODO find out how to use XP
 
-//    private static void initGeneralConfig(Configuration cfg) {
-//        cfg.addCustomCategoryComment(CATEGORY_GENERAL, "General configuration");
-//        generatorGeneration = cfg.getInt("generator output", CATEGORY_GENERAL, 40, 0, Integer.MAX_VALUE, );
-//    }
+    public static class RainBlock {
+        @Config.Comment("What way of activation? [WIP]")
+        public static ActivationType type = ActivationType.FE;
 
+        public enum ActivationType {
+            FE,
+            FREE,
+            XP_WIP
+        }
+
+        @Config.Comment("[FE] FE needed to activate the block")
+        @Config.RangeInt(min = 0)
+        public static int FE_activation = 1000000;
+
+        @Config.Comment("[FE] max FE input")
+        @Config.RangeInt(min = 0)
+        public static int FE_input = 2000;
+
+        @Config.Comment("[FE] inner FE capacity")
+        @Config.RangeInt(min = 0)
+        public static int FE_capacity = 10000000;
+
+        @Config.Comment("[XP] levels needed to activate")
+        @Config.RangeInt(min = 0)
+        public static int levels = 10;
+
+
+    }
+
+
+
+    public static class Generator {
+        @Config.Comment("FE generation")
+        @Config.RangeInt(min = 0)
+        public static int generation = 40;
+
+        @Config.Comment("maximum FE output per side")
+        @Config.RangeInt(min = 0)
+        public static int output = 2000;
+
+        @Config.Comment("inner FE capacity")
+        @Config.RangeInt(min = 0)
+        public static int capacity = 200000;
+    }
 
     @Mod.EventBusSubscriber(modid = ModUtil.MOD_ID)
     private static class EventHandler {
@@ -46,11 +72,10 @@ public class ConfigHandler {
          */
         @SubscribeEvent
         public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
+            event.getConfigID();
             if (event.getModID().equals(ModUtil.MOD_ID)) {
                 ConfigManager.sync(ModUtil.MOD_ID, Config.Type.INSTANCE);
             }
         }
     }
-
-
 }
