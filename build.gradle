@@ -41,10 +41,6 @@ repositories {
         url = "http://maven.covers1624.net"
     }
     maven {
-        name = "Tesla API"
-        url 'http://maven.mcmoddev.com'
-    }
-    maven {
         // location of the maven that hosts JEI files
         name = "Progwml6 maven"
         url = "http://dvs1.progwml6.com/files/maven"
@@ -75,12 +71,7 @@ dependencies {
     //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 //    deobfCompile "apengu:HammerCore:1.12.2-1.9.4.8:deobf"
     deobfCompile "cofh:RedstoneFlux:1.12-2.0.1.2:universal"
-    deobfCompile "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
-
-//    // compile against the JEI API but do not include it at runtime
-//    deobfProvided "mezz.jei:jei_${mc_version}:${jei_version}:api"
-//    // at runtime, use the full JEI jar
-//    runtime "mezz.jei:jei_${mc_version}:${jei_version}"
+//    deobfCompile "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
 
     // compile against the JEI API but do not include it at runtime
     deobfProvided "mezz.jei:jei_1.12.1:${jei_version}:api"

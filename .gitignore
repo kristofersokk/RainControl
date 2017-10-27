@@ -9,7 +9,6 @@ run/
 SolarFluxReborn-1.12
 .gradle
 .idea
-src/api/
 src/test/
 /gradlew
 /gradlew.bat
