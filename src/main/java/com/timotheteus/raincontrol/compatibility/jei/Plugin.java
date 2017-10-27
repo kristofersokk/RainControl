@@ -26,8 +26,7 @@ public class Plugin implements IModPlugin {
                 "Hover over stack in GUI to see more info."
         );
         registry.addDescription(new ItemStack(Blocks.blockSensor),
-                "This block gives redstone signal when raining.",
-                "When connected to a Rain Block, then it will never rain."
+                "This block gives redstone signal when raining."
         );
 
     }
