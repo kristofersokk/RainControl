@@ -19,8 +19,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod.EventBusSubscriber
 public class RainControl {
 
-    //TODO add rain sensor
-
 	@Mod.Instance(ModUtil.MOD_ID)
     public static RainControl instance;
 
