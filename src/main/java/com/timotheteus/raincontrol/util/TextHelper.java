@@ -11,18 +11,12 @@ public class TextHelper {
      * usually called on server
      */
     public static void chatMessageServer(EntityPlayer player, String message){
-        try {
-            player.sendStatusMessage(new TextComponentString(message), false);
-        } catch (Exception e) {
-        }
+        player.sendStatusMessage(new TextComponentString(message), false);
     }
 
     public static void chatMessageServer(List<EntityPlayer> players, String message){
-        try {
-            for(EntityPlayer player : players)
-                player.sendStatusMessage(new TextComponentString(message), false);
-        } catch (Exception e) {
-        }
+        for(EntityPlayer player : players)
+            player.sendStatusMessage(new TextComponentString(message), false);
     }
 
 
