@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
-abstract class BlockBase extends Block {
+abstract class BlockBase extends Block implements BaseBlock {
 
     BlockBase(Material blockMaterialIn, String id) {
         super(blockMaterialIn, MapColor.GRAY);
@@ -14,16 +14,25 @@ abstract class BlockBase extends Block {
         this.id = id;
     }
 
-    public final String id;
+    private final String id;
 
+    @Override
     public String getModelName() {
         return ModUtil.MOD_ID + ":" + id;
     }
 
+    @Override
     public String getTileEntityName() {
         return ModUtil.MOD_ID + "_" + id;
     }
 
+    @Override
+    public Block getBlock() {
+        return this;
+    }
 
-
+    @Override
+    public String getId() {
+        return id;
+    }
 }

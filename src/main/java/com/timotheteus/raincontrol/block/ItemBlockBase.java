@@ -10,7 +10,7 @@ public class ItemBlockBase extends ItemBlock {
 
     public ItemBlockBase(Block block) {
         super(block);
-        this.id = ((BlockBase) block).id;
+        this.id = ((BaseBlock) block).getId();
         this.setUnlocalizedName(ModUtil.MOD_ID + "." + id);
         this.setRegistryName(id);
     }

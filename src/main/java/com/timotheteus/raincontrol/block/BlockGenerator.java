@@ -27,9 +27,9 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
 
     public BlockGenerator() {
         super(Material.IRON, Names.BLOCK_GENERATOR);
-        this.setHardness(1.5F)
-                .setResistance(10f)
-                .setCreativeTab(CreativeTabs.MISC);
+        this.setHardness(1.5F);
+        setResistance(10f);
+        setCreativeTab(CreativeTabs.MISC);
         this.setSoundType(SoundType.METAL);
     }
 
