@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 public abstract class TileEntityBase extends TileEntity implements ITickable {
 
     private int tick = 0;
+    @Nullable
     private final Module[] modules;
 
     TileEntityBase(ModuleTypes[] moduleTypes, Object[][] objects) {
@@ -29,14 +30,20 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
         this.modules = modules;
     }
 
+    public TileEntityBase() {
+        modules = null;
+    }
+
     boolean sync = false;
 
     @Override
     public void update() {
         sync = false;
-        for (Module module : modules) {
-            if (module.tick())
-                sync = true;
+        if (modules != null){
+            for (Module module : modules) {
+                if (module.tick())
+                    sync = true;
+            }
         }
         tick++;
         if (tick >= 32400)

@@ -17,12 +17,18 @@ public class Plugin implements IModPlugin {
                 "No GUI, only right, shift-right clicking or redstone.",
                 "Max capacity 10,000,000 FE",
                 "Use the generator to get energy.",
-                "Holds energy when picked up.");
+                "Holds energy when picked up."
+        );
         registry.addDescription(new ItemStack(Blocks.blockGenerator),
                 "This block generates constant 40 (FE/RF/T)/tick.",
                 "Can be automated.",
                 "Disperses energy into neighboring blocks.",
-                "Hover over stack in GUI to see more info.");
+                "Hover over stack in GUI to see more info."
+        );
+        registry.addDescription(new ItemStack(Blocks.blockSensor),
+                "This block gives redstone signal when raining.",
+                "When connected to a Rain Block, then it will never rain."
+        );
 
     }
 

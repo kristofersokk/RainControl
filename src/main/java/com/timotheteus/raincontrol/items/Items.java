@@ -17,15 +17,18 @@ public class Items {
 
     public static ItemRainBlock blockRain_item;
     public static ItemBlockBase blockgenerator_item;
+    public static ItemBlockBase blocksensor_item;
 
     @SubscribeEvent
     public static void init(RegistryEvent.Register<Item> event) {
         blockRain_item = new ItemRainBlock(Blocks.blockRain);
         blockgenerator_item = new ItemBlockBase(Blocks.blockGenerator);
+        blocksensor_item = new ItemBlockBase(Blocks.blockSensor);
 
         event.getRegistry().registerAll(
                 blockRain_item,
-                blockgenerator_item
+                blockgenerator_item,
+                blocksensor_item
         );
     }
 
@@ -34,6 +37,7 @@ public class Items {
 //        blockRain.initModel();
         registerItemBlockModel(blockRain_item);
         registerItemBlockModel(blockgenerator_item);
+        registerItemBlockModel(blocksensor_item);
     }
 
     @SideOnly(Side.CLIENT)

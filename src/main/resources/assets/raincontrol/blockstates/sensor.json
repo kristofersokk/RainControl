@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "power=true": {
+      "model": "raincontrol:sensor",
+      "textures": {
+        "particle": "raincontrol:blocks/sensor/sensor_top_on",
+        "top": "raincontrol:blocks/sensor/sensor_top_on",
+        "side": "raincontrol:blocks/sensor/sensor_side"
+      }
+    },
+    "power=false": {
+      "model": "raincontrol:sensor",
+      "textures": {
+        "particle": "raincontrol:blocks/sensor/sensor_top_off",
+        "top": "raincontrol:blocks/sensor/sensor_top_off",
+        "side": "raincontrol:blocks/sensor/sensor_side"
+      }
+    }
+  }
+}

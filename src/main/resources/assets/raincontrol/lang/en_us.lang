@@ -1,3 +1,4 @@
 #blocks
 tile.raincontrol.rainblock.name=Rain Controller
-tile.raincontrol.generatorblock.name=Generator
+tile.raincontrol.generator.name=Generator
+tile.raincontrol.sensor.name=Rain Sensor

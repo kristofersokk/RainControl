@@ -1,0 +1,8 @@
+{
+  "parent": "raincontrol:block/sensor",
+  "textures": {
+    "particle": "raincontrol:blocks/sensor/sensor_top_off",
+    "top": "raincontrol:blocks/sensor/sensor_top_off",
+    "side": "raincontrol:blocks/sensor/sensor_side"
+  }
+}

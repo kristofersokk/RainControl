@@ -20,8 +20,6 @@ import java.util.Arrays;
 
 public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Property.Energy, Property.BurnTime, Energy.Producer {
 
-    private static final int maxStorage = 200000;
-    private static final int maxOutput = 1000;
     private static final Capability[] capabilities = new Capability[]{
             CapabilityEnergy.ENERGY,
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
@@ -34,7 +32,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         super(new ModuleTypes[]{
                 ModuleTypes.ENERGY_DISPENSER
         }, new Object[][]{
-                {maxOutput}
+                {getMaxOutput()}
                 },
                 CustomSlot.StackFilter.GENERATOR
         );
@@ -44,16 +42,19 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
     @Override
     public void update() {
         if (!world.isRemote) {
+            //server-side
+            boolean sync = false;
+            if (energy > getMaxEnergyStored()){//if capacity was lowered below energy levels
+                energy = getMaxEnergyStored();
+                sync = true;
+            }
             int prevEnergy = energy;
-
             super.update();
-
-            boolean sync;
-            sync = super.sync;
-
+            if (super.sync)
+                sync = true;
             //burning
             if (burnTimeLeft > 0) {
-                if (energy != maxStorage) {
+                if (energy != getMaxEnergyStored()) {
                     burnTimeLeft--;
                     if (changeEnergy(getGeneration(), false))
                         if (prevEnergy != energy)
@@ -75,7 +76,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
             }
             if (sync)
                 markDirty(true);
-
         } else {
             //client-side
             if (getEnergyStored() != getMaxEnergyStored() && burnTimeLeft > 0) {
@@ -132,7 +132,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        int extracted = Math.min(maxExtract, Math.min(maxOutput, energy));
+        int extracted = Math.min(maxExtract, Math.min(getMaxOutput(), energy));
         if (!simulate) {
             changeEnergy(-extracted, true);
         }
@@ -146,7 +146,11 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int getMaxEnergyStored() {
-        return maxStorage;
+        return ConfigHandler.generator.capacity;
+    }
+
+    public static int getMaxOutput() {
+        return ConfigHandler.generator.maxOutput;
     }
 
     @Override
@@ -171,8 +175,8 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         energy += a;
         if (energy < 0)
             energy = 0;
-        if (energy > maxStorage)
-            energy = maxStorage;
+        if (energy > getMaxEnergyStored())
+            energy = getMaxEnergyStored();
         if (prevEnergy != energy) {
             markDirty(sync);
             return true;
@@ -226,18 +230,18 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public long getCapacity() {
-        return maxStorage;
+        return getMaxEnergyStored();
     }
 
     @Override
     public int getGeneration() {
-        return ConfigHandler.generatorGeneration;
+        return ConfigHandler.generator.generation;
     }
 
 
     @Override
     public long takePower(long power, boolean simulated) {
-        long extracted = Math.min(power, Math.min(maxOutput, energy));
+        long extracted = Math.min(power, Math.min(getMaxOutput(), energy));
         if (!simulated) {
             changeEnergy(-(int) extracted, true);
         }
@@ -246,7 +250,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        int extracted = Math.min(maxExtract, Math.min(maxOutput, energy));
+        int extracted = Math.min(maxExtract, Math.min(getMaxOutput(), energy));
         if (!simulate) {
             changeEnergy(-extracted, true);
         }
@@ -260,7 +264,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return maxStorage;
+        return getMaxEnergyStored();
     }
 
     @Override
