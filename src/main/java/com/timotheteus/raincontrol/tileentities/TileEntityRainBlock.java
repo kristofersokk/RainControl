@@ -262,9 +262,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
-            return false;
-        return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
+        return ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE && (Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing));
     }
 
     @Override
