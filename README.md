@@ -1,4 +1,4 @@
-# Rain-Control
+# Rain Control
 A mod for Minecraft using Forge and other APIs(JEI, Redstone Flux and Tesla).
 
 There's 3 blocks:
