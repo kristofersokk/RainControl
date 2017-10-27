@@ -67,6 +67,8 @@ public class EnergyDispenserModule extends Module {
                     Property.Energy syncableEnergy = (Property.Energy) this.te;
                     return syncableEnergy.changeEnergy(-receive, false);
                 }
+            }else {
+                return false;
             }
         } else if (neighbour instanceof IEnergyReceiver) {
             IEnergyReceiver storage = (IEnergyReceiver) neighbour;
@@ -76,6 +78,8 @@ public class EnergyDispenserModule extends Module {
                     Property.Energy syncableEnergy = (Property.Energy) this.te;
                     return syncableEnergy.changeEnergy(-receive, false);
                 }
+            }else {
+                return false;
             }
         } else if (neighbour.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, facing)) {
             ITeslaConsumer storage = (ITeslaConsumer) neighbour;
@@ -83,6 +87,8 @@ public class EnergyDispenserModule extends Module {
             if (receive > 0) {
                 Property.Energy syncableEnergy = (Property.Energy) this.te;
                 return syncableEnergy.changeEnergy(-(int) receive, false);
+            }else {
+                return false;
             }
         }
         return false;
