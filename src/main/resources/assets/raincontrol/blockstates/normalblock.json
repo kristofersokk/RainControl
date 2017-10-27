@@ -1,7 +1,6 @@
 {
   "forge_marker": 1,
   "model": "block/cube_all",
-
   "variants": {
     "normal": [{}],
     "inventory": [{}]

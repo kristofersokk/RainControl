@@ -1,6 +1,6 @@
 {
   "parent": "raincontrol:normalblock",
   "textures": {
-    "all": "raincontrol:blocks/generatorblock"
+    "all": "raincontrol:blocks/generator"
   }
 }
