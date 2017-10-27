@@ -2,8 +2,8 @@ package com.timotheteus.raincontrol.tileentities.modules;
 
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.timotheteus.raincontrol.tileentities.Property;
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.capability.TeslaCapabilities;
+import darkhax.tesla.api.ITeslaConsumer;
+import darkhax.tesla.api.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
