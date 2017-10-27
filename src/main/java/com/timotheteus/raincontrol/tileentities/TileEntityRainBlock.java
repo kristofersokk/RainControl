@@ -236,7 +236,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean canReceive() {
-        return true;
+        return ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE;
     }
 
     @Override
@@ -253,6 +253,8 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
+            return 0;
         int received = Math.min(getMaxInput(), Math.min(getMaxEnergyStored() - energy, maxReceive));
         if (!simulate) {
             changeEnergy(received, true);
@@ -262,6 +264,8 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
+            return false;
         return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
     }
 
