@@ -2,9 +2,9 @@ package com.timotheteus.raincontrol.tileentities;
 
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.api.ITeslaProducer;
+import darkhax.tesla.api.ITeslaConsumer;
+import darkhax.tesla.api.ITeslaHolder;
+import darkhax.tesla.api.ITeslaProducer;
 import net.minecraftforge.energy.IEnergyStorage;
 
 interface Energy extends IEnergyStorage, ITeslaHolder {
