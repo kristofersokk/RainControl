@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 public class TileEntityInventoryBase extends TileEntityBase implements Inventory, IInventory {
 
     private static final int SIZE = 1;
-    private static final ItemStack EMPTY = ItemStack.EMPTY;
     final CustomItemStackHandler itemStackHandler;
     private final CustomSlot.StackFilter filter;
 
@@ -42,42 +41,42 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
         return itemStackHandler.getStackInSlot(index);
     }
 
-    @Override
     public boolean isEmpty() {
         for (ItemStack stack : itemStackHandler.getAllSlots())
-            if (!stack.isEmpty())
+            if (stack != null)
                 return false;
         return true;
     }
 
     @Override
+    @Nullable
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack = getStackInSlot(index).copy();
-        if (stack.getCount() > count) {
-            stack.setCount(stack.getCount() - count);
+        if (stack.stackSize > count) {
+            stack.stackSize -= count;
             return stack;
         } else {
-            return EMPTY.copy();
+            return null;
         }
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        itemStackHandler.setStackInSlot(index, EMPTY.copy());
-        return EMPTY.copy();
+        itemStackHandler.setStackInSlot(index, null);
+        return null;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        if (index < 0 || index >= this.getSizeInventory())
+        if (index < 0 || index >= getSizeInventory())
             return;
         itemStackHandler.validateSlotIndex(index);
 
-        if (stack.getCount() > this.getInventoryStackLimit())
-            stack.setCount(this.getInventoryStackLimit());
+        if (stack.stackSize > getInventoryStackLimit())
+            stack.stackSize = getInventoryStackLimit();
 
-        if (stack.getCount() == 0)
-            stack = EMPTY;
+        if (stack.stackSize == 0)
+            stack = null;
 
         if (isItemValidForSlot(index, stack))
             itemStackHandler.setStackInSlot(index, stack.copy());
@@ -124,7 +123,7 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
     @Override
     public void clear() {
         for (int i = 0; i < this.getSizeInventory(); i++)
-            this.setInventorySlotContents(i, EMPTY.copy());
+            this.setInventorySlotContents(i, null);
     }
 
     @Override

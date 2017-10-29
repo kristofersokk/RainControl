@@ -35,31 +35,27 @@ public class CustomItemStackHandler extends ItemStackHandler {
         } catch (Exception e) {
             return false;
         }
-        if (!stack.isEmpty()) {
-            int amount = stack.getCount();
-            int newAmount = amount + modify;
-            if (newAmount > stack.getMaxStackSize())
-                newAmount = stack.getMaxStackSize();
-            if (newAmount < 1) {
-                setStackInSlot(slot, ItemStack.EMPTY.copy());
-            } else {
-                stack.setCount(newAmount);
-                setStackInSlot(slot, stack);
-            }
-            return true;
+        int amount = stack.stackSize;
+        int newAmount = amount + modify;
+        if (newAmount > stack.getMaxStackSize())
+            newAmount = stack.getMaxStackSize();
+        if (newAmount < 1) {
+            setStackInSlot(slot, null);
+        } else {
+            stack.stackSize = newAmount;
+            setStackInSlot(slot, stack);
         }
-        return false;
+        return true;
     }
 
     @Override
     public int getSlots() {
-        return stacks.size();
+        return stacks.length;
     }
 
-    @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return stacks.get(slot);
+        return stacks[slot];
     }
 
 //    @Nonnull
@@ -90,7 +86,7 @@ public class CustomItemStackHandler extends ItemStackHandler {
 //        return stack;
 //    }
 
-    public Iterable<? extends ItemStack> getAllSlots() {
+    public ItemStack[] getAllSlots() {
         return stacks;
     }
 
@@ -103,15 +99,13 @@ public class CustomItemStackHandler extends ItemStackHandler {
         return filter == null || filter.isValid(stack);
     }
 
-    @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         ItemStack local = getStackInSlot(slot);
-        if (local.isEmpty() && !stack.isEmpty() && !filterAllows(stack))
+        if (local == null && !filterAllows(stack))
             return stack;
         return super.insertItem(slot, stack, simulate);
     }
-
 
 //    @Nonnull
 //    @Override
@@ -135,7 +129,6 @@ public class CustomItemStackHandler extends ItemStackHandler {
 //        }
 //    }
 
-    @Override
     public int getSlotLimit(int slot) {
         return 64;
     }

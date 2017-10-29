@@ -3,7 +3,6 @@ package com.timotheteus.raincontrol.compatibility.jei;
 import com.timotheteus.raincontrol.block.ModBlocks;
 import mezz.jei.api.*;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 
 @JEIPlugin
@@ -16,11 +15,6 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
-
-    }
-
-    @Override
-    public void registerCategories(IRecipeCategoryRegistration registry) {
 
     }
 

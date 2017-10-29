@@ -1,7 +1,7 @@
 package com.timotheteus.raincontrol.tileentities.modules;
 
 import cofh.api.energy.IEnergyReceiver;
-import com.timotheteus.raincontrol.config.ConfigHandler;
+import com.timotheteus.raincontrol.config.ModConfig;
 import com.timotheteus.raincontrol.tileentities.Property;
 import darkhax.tesla.api.ITeslaConsumer;
 import darkhax.tesla.api.capability.TeslaCapabilities;
@@ -71,7 +71,7 @@ public class EnergyDispenserModule extends Module {
             }else {
                 return false;
             }
-        } else if (ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE && neighbour instanceof IEnergyReceiver) {
+        } else if (ModConfig.isFEMode() && neighbour instanceof IEnergyReceiver) {
             IEnergyReceiver storage = (IEnergyReceiver) neighbour;
             if (storage.canConnectEnergy(facing)) {
                 int receive = storage.receiveEnergy(facing, Math.min(localStorage.getEnergyStored(), maxOutput), false);
