@@ -1,0 +1,9 @@
+#blocks
+tile.raincontrol.rainblock.name=Rain Controller
+tile.raincontrol.generator.name=Generator
+tile.raincontrol.sensor.name=Rain Sensor
+
+raincontrol.config.title=Rain Control Config
+raincontrol.config.generator=Generator
+raincontrol.config.rainblock=Rain Controller
+raincontrol.config.sensor=Rain Sensor
