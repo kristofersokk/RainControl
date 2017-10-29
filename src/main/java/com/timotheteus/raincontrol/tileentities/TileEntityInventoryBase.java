@@ -6,7 +6,6 @@ import com.timotheteus.raincontrol.util.CustomItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 

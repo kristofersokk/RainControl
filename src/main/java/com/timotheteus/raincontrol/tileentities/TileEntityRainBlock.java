@@ -11,8 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
@@ -264,9 +262,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
-            return false;
-        return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
+        return ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE && (Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing));
     }
 
     @Override

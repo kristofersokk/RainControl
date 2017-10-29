@@ -1,8 +1,0 @@
-{
-  "parent": "item/generated",
-  "defaults": {
-    "textures": {
-      "layer0": "raincontrol:common/unknown"
-    }
-  }
-}

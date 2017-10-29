@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
-public class Blocks {
+public class ModBlocks {
 
     public static BlockRain blockRain;
     public static BlockGenerator blockGenerator;

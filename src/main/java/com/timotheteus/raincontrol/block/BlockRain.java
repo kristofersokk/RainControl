@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.block;
 
-import com.timotheteus.raincontrol.items.Items;
+import com.timotheteus.raincontrol.items.ModItems;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
 import com.timotheteus.raincontrol.util.Names;
 import net.minecraft.block.ITileEntityProvider;
@@ -15,13 +15,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class BlockRain extends BlockBase implements ITileEntityProvider{
@@ -48,22 +49,24 @@ public class BlockRain extends BlockBase implements ITileEntityProvider{
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return Items.blockRain_item;
+        return ModItems.blockRain_item;
     }
 
     @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        TileEntityRainBlock te = world.getTileEntity(pos) instanceof TileEntityRainBlock ? (TileEntityRainBlock) world.getTileEntity(pos) : null;
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        List<ItemStack> stacks = new ArrayList<>();
+	    TileEntityRainBlock te = world.getTileEntity(pos) instanceof TileEntityRainBlock ? (TileEntityRainBlock) world.getTileEntity(pos) : null;
         if (te != null) {
             int energy = te.getEnergyStored();
-            ItemStack stack = new ItemStack(Items.blockRain_item);
+            ItemStack stack = new ItemStack(ModItems.blockRain_item);
             if (energy > 0) {
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setInteger("energy", energy);
                 stack.setTagCompound(nbt);
             }
-            drops.add(stack);
+            stacks.add(stack);
         }
+        return stacks;
     }
 
     @Override

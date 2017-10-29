@@ -13,16 +13,16 @@
   <component name="McpModuleSettings">
     <option name="mappingFiles">
       <set>
-        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.12.2\srgs\mcp-notch.srg" />
-        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.12.2\srgs\mcp-srg.srg" />
-        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.12.2\srgs\mcp.exc" />
-        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.12.2\srgs\notch-mcp.srg" />
-        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.12.2\srgs\notch-srg.srg" />
-        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.12.2\srgs\srg.exc" />
+        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.11.2\srgs\mcp-notch.srg" />
+        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.11.2\srgs\mcp-srg.srg" />
+        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.11.2\srgs\mcp.exc" />
+        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.11.2\srgs\notch-mcp.srg" />
+        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.11.2\srgs\notch-srg.srg" />
+        <option value="C:\Users\krist\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20171025\1.11.2\srgs\srg.exc" />
       </set>
     </option>
     <option name="mcpVersion" value="snapshot_20171025" />
-    <option name="minecraftVersion" value="1.12.2" />
+    <option name="minecraftVersion" value="1.11.2" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -38,8 +38,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: deobf.cofh:RedstoneFlux:1.12-2.0.1.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: deobf.net.darkhax.tesla:Tesla-1.12.2:1.0.63" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: deobf.net.darkhax.tesla:Tesla:1.11-1.3.0.52" level="project" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library name="Gradle: compileDummy">
         <CLASSES>
@@ -59,32 +58,31 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.mojang:patchy:1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.mojang:netty:1.6" level="project" />
     <orderEntry type="library" name="Gradle: oshi-project:oshi-core:1.1" level="project" />
-    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:platform:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.ibm.icu:icu4j-core-mojang:51.2" level="project" />
-    <orderEntry type="library" name="Gradle: net.sf.jopt-simple:jopt-simple:5.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: io.netty:netty-all:4.1.9.Final" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.guava:guava:21.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
-    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.10" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.jopt-simple:jopt-simple:4.6" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-all:4.0.23.Final" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:17.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" name="Gradle: net.java.jutils:jutils:1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.mojang:authlib:1.5.25" level="project" />
-    <orderEntry type="library" name="Gradle: com.mojang:realms:1.10.17" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.mojang:authlib:1.5.24" level="project" />
+    <orderEntry type="library" name="Gradle: com.mojang:realms:1.10.16" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-compress:1.8.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.3.3" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.1.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.3.2" level="project" />
-    <orderEntry type="library" name="Gradle: it.unimi.dsi:fastutil:7.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-api:2.8.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-core:2.8.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.mojang:text2speech:1.10.3" level="project" />
+    <orderEntry type="library" name="Gradle: it.unimi.dsi:fastutil:7.0.12_mojang" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-api:2.0-beta9" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-core:2.0-beta9" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraft:launchwrapper:1.12" level="project" />
     <orderEntry type="library" name="Gradle: jline:jline:2.13" level="project" />
-    <orderEntry type="library" name="Gradle: org.ow2.asm:asm-debug-all:5.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.ow2.asm:asm-debug-all:5.0.3" level="project" />
     <orderEntry type="library" name="Gradle: com.typesafe.akka:akka-actor_2.11:2.3.3" level="project" />
     <orderEntry type="library" name="Gradle: com.typesafe:config:1.2.1" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-actors-migration_2.11:1.1.0" level="project" />
@@ -107,7 +105,6 @@
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209" level="project" />
     <orderEntry type="library" name="Gradle: java3d:vecmath:1.5.2" level="project" />
-    <orderEntry type="library" name="Gradle: ca.weblite:java-objc-bridge:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.fusesource.jansi:jansi:1.11" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-actors:2.11.0" level="project" />
     <orderEntry type="library" name="Gradle: net.java.jinput:jinput-platform:2.0.5:natives-linux" level="project" />
@@ -116,11 +113,10 @@
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209:natives-windows" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209:natives-linux" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209:natives-osx" level="project" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forgeSrc:1.12.2-14.23.0.2515" level="project" />
-    <orderEntry type="library" name="Gradle: deobf.mezz.jei:jei_1.12.1:4.7.8.95" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: deobf.cofh:RedstoneFlux:1.12-2.0.1.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: deobf.net.darkhax.tesla:Tesla-1.12.2:1.0.63" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: mezz.jei:jei_1.12.1:4.7.8.95" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forgeSrc:1.11.2-13.20.1.2516" level="project" />
+    <orderEntry type="library" name="Gradle: deobf.mezz.jei:jei_1.11.2:4.5.1.296" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: deobf.net.darkhax.tesla:Tesla:1.11-1.3.0.52" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: mezz.jei:jei_1.11.2:4.5.1.296" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
       <library name="Gradle: compileDummy">
         <CLASSES>
@@ -142,15 +138,14 @@
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="file://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.12.2-14.23.0.2515/start" />
+          <root url="file://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.11.2-13.20.1.2516/start" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" scope="TEST" name="Gradle: deobf.cofh:RedstoneFlux:1.12-2.0.1.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: deobf.net.darkhax.tesla:Tesla-1.12.2:1.0.63" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: mezz.jei:jei_1.12.1:4.7.8.95" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: deobf.net.darkhax.tesla:Tesla:1.11-1.3.0.52" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: mezz.jei:jei_1.11.2:4.5.1.296" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library name="Gradle: compileDummy">
         <CLASSES>
