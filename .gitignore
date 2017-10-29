@@ -1,12 +1,8 @@
-AstralSorcery-master
 build
 gradle
 classes
-ironchest-1.11
-ModTutorials-1.12
 out
 run/
-SolarFluxReborn-1.12
 .gradle
 .idea
 src/api/

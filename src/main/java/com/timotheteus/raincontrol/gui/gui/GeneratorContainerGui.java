@@ -4,6 +4,7 @@ import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.ModUtil;
 import com.timotheteus.raincontrol.util.TextHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
@@ -83,7 +84,7 @@ public class GeneratorContainerGui extends GuiContainer {
         if (slot != null && slot.getHasStack()) {
             ItemStack stack = slot.getStack();
             if (!stack.isEmpty()) {
-                List<String> tooltip = this.getItemToolTip(stack);
+                List<String> tooltip = stack.getTooltip(Minecraft.getMinecraft().player, false);
                 int max = stack.getMaxStackSize();
                 int burntime = TileEntityFurnace.getItemBurnTime(stack);
                 if (burntime != 0) {
@@ -101,7 +102,10 @@ public class GeneratorContainerGui extends GuiContainer {
                 net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
             }
         }
+    }
 
-
+    @Override
+    protected void renderToolTip(ItemStack stack, int x, int y) {
+        super.renderToolTip(stack, x, y);
     }
 }
