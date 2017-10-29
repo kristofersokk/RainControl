@@ -20,8 +20,8 @@ version = "${mod_version}"
 group = "com.timotheteus.raincontrol"
 archivesBaseName = 'raincontrol'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 minecraft {
     version = "${forge_version}"
