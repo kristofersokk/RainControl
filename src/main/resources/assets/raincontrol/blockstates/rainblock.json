@@ -1,6 +1,5 @@
 {
-  "parent": "raincontrol:normalblock",
-  "textures": {
-    "all": "raincontrol:blocks/rainblock"
+  "variants":{
+    "normal":[{"model":"raincontrol:rainblock"}]
   }
 }

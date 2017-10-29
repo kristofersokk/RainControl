@@ -2,7 +2,7 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.RainControl;
 import com.timotheteus.raincontrol.handlers.GuiHandler;
-import com.timotheteus.raincontrol.items.Items;
+import com.timotheteus.raincontrol.items.ModItems;
 import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.Names;
@@ -48,7 +48,7 @@ public class BlockGenerator extends BlockBase implements ITileEntityProvider {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return Items.blockgenerator_item;
+        return ModItems.blockgenerator_item;
     }
 
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {

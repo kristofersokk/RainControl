@@ -8,8 +8,7 @@ public class Delay {
     }
 
     public void tick(boolean newBool){
-        for (int i = 0; i < ticks-1; i++)
-            bools[i] = bools[i+1];
+        System.arraycopy(bools, 1, bools, 0, ticks - 1);
         bools[ticks-1] = newBool;
     }
 
