@@ -12,9 +12,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(modid = ModUtil.MOD_ID,
         name = ModUtil.NAME,
         version = ModUtil.VERSION,
-        acceptedMinecraftVersions = "[1.12, 1.13)",
-        dependencies = "required-after:redstoneflux;" +
-                "after:tesla;"
+        acceptedMinecraftVersions = "[1.11, 1.12)",
+        dependencies = "required-after:tesla;"
 )
 @Mod.EventBusSubscriber
 public class RainControl {
@@ -24,6 +23,7 @@ public class RainControl {
 
     @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
     private static CommonProxy proxy;
+
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -38,5 +38,14 @@ public class RainControl {
     public void postInit(FMLPostInitializationEvent event){
         proxy.postInit(event);
     }
+
+
+//    @SubscribeEvent
+//    public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
+//        Entity entity = event.player;
+//        if (entity instanceof EntityPlayerMP) {
+//            new PacketConfig().sendTo((EntityPlayerMP) entity);
+//        }
+//    }
 
 }

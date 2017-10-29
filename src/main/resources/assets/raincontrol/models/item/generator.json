@@ -1,6 +1,3 @@
 {
-  "parent": "raincontrol:item/itemblock",
-  "textures": {
-    "all": "raincontrol:blocks/generator"
-  }
+   "parent": "raincontrol:block/generator"
 }

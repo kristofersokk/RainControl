@@ -72,7 +72,6 @@ public class ConfigHandler {
 
         @Config.Comment("Sensor delay [needs world restart]")
         @Config.RangeInt(min = 1)
-        @Config.RequiresWorldRestart
         public int delay = 40;
     }
 
@@ -88,7 +87,7 @@ public class ConfigHandler {
         public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
             event.getConfigID();
             if (event.getModID().equals(ModUtil.MOD_ID)) {
-                ConfigManager.sync(ModUtil.MOD_ID, Config.Type.INSTANCE);
+                ConfigManager.load(ModUtil.MOD_ID, Config.Type.INSTANCE);
             }
         }
     }
