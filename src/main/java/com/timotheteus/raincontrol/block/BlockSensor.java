@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.block;
 
-import com.timotheteus.raincontrol.config.ConfigHandler;
+import com.timotheteus.raincontrol.config.ModConfig;
 import com.timotheteus.raincontrol.tileentities.TileEntitySensor;
 import com.timotheteus.raincontrol.util.Delay;
 import com.timotheteus.raincontrol.util.Names;
@@ -31,7 +31,7 @@ public class BlockSensor extends BlockContainerBase {
         setCreativeTab(CreativeTabs.MISC);
         setHardness(6);
         setSoundType(SoundType.METAL);
-        rain = new Delay(ConfigHandler.sensor.delay);
+        rain = new Delay(ModConfig.SENSOR.delay);
     }
 
     @Override

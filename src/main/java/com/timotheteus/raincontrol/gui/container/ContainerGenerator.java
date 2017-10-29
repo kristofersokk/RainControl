@@ -76,36 +76,36 @@ public class ContainerGenerator extends Container {
                 //Shift from Inventory
                 if (TileEntityFurnace.getItemBurnTime(newStack) > 0) {
                     if (!this.mergeItemStack(newStack, 0, 1, false)) {
-                        return ItemStack.EMPTY.copy();
+                        return null;
                     }
                 }
                 //
 
                 else if (index >= inventoryStart && index <= inventoryEnd) {
                     if (!this.mergeItemStack(newStack, hotbarStart, hotbarEnd + 1, false)) {
-                        return ItemStack.EMPTY.copy();
+                        return null;
                     }
                 } else if (index >= inventoryEnd + 1 && index < hotbarEnd + 1 && !this.mergeItemStack(newStack, inventoryStart, inventoryEnd + 1, false)) {
-                    return ItemStack.EMPTY.copy();
+                    return null;
                 }
             } else if (!this.mergeItemStack(newStack, inventoryStart, hotbarEnd + 1, false)) {
-                return ItemStack.EMPTY.copy();
+                return null;
             }
 
             if (!filter.isValid(newStack)) {
-                theSlot.putStack(ItemStack.EMPTY.copy());
+                theSlot.putStack(null);
             } else {
                 theSlot.onSlotChanged();
             }
 
-            if (newStack.getCount() == currentStack.getCount()) {
-                return ItemStack.EMPTY.copy();
+            if (newStack.stackSize == currentStack.stackSize) {
+                return null;
             }
-            theSlot.onTake(playerIn, newStack);
+            theSlot.func_82870_a(playerIn, newStack);
 
             return currentStack;
         }
-        return ItemStack.EMPTY.copy();
+        return null;
     }
 
     @Override

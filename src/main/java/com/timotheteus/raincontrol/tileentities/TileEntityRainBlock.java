@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.timotheteus.raincontrol.config.ConfigHandler;
+import com.timotheteus.raincontrol.config.ModConfig;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.PlayerHelper;
 import com.timotheteus.raincontrol.util.TextHelper;
@@ -39,14 +39,14 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
     }
 
     public void activated(@Nullable EntityPlayer player, boolean shiftKeyDown){
-        switch (ConfigHandler.rainBlock.type){
-            case FREE:
+        switch (ModConfig.RAINBLOCK.type) {
+            case "FREE":
                 activatedFree(player);
                 break;
-            case FE:
+            case "FE":
                 activatedFE(player, shiftKeyDown);
                 break;
-            case XP:
+            case "XP":
                 activatedXP(player);
                 break;
         }
@@ -137,7 +137,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
             if (player != null){
                 if (!needsSky() || needsSky() && world.canSeeSky(pos.up())) {
                     if (cooldown == 0) {
-                        if (PlayerHelper.removeXPLevels(player, ConfigHandler.rainBlock.XP_levels, pos, true)) {
+                        if (PlayerHelper.removeXPLevels(player, ModConfig.RAINBLOCK.XP_levels, pos, true)) {
                             cooldown = cooldownLength;
                             if (world.getWorldInfo().isRaining()) {
                                 world.getWorldInfo().setRaining(false);
@@ -147,7 +147,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
                                 TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Starting rain");
                             }
                         } else {
-                            TextHelper.chatMessageServer(player, "Not enough levels. " + ConfigHandler.rainBlock.XP_levels + " levels needed.");
+                            TextHelper.chatMessageServer(player, "Not enough levels. " + ModConfig.RAINBLOCK.XP_levels + " levels needed.");
                             cooldown = 10;
                         }
                     }
@@ -186,7 +186,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
     }
 
     private boolean needsSky(){
-        return ConfigHandler.rainBlock.needsSky;
+        return ModConfig.RAINBLOCK.needsSky;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public int getMaxEnergyStored() {
-        return ConfigHandler.rainBlock.FE_capacity;
+        return ModConfig.RAINBLOCK.FE_capacity;
     }
 
     @Override
@@ -234,7 +234,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean canReceive() {
-        return ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE;
+        return ModConfig.isFEMode();
     }
 
     @Override
@@ -251,7 +251,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
+        if (!ModConfig.isFEMode())
             return 0;
         int received = Math.min(getMaxInput(), Math.min(getMaxEnergyStored() - energy, maxReceive));
         if (!simulate) {
@@ -262,7 +262,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE && (Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing));
+        return ModConfig.isFEMode() && (Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing));
     }
 
     @Override
@@ -332,10 +332,10 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
     }
 
     public int getMaxInput() {
-        return ConfigHandler.rainBlock.FE_maxInput;
+        return ModConfig.RAINBLOCK.FE_maxInput;
     }
 
     public int getActivation() {
-        return ConfigHandler.rainBlock.FE_activation;
+        return ModConfig.RAINBLOCK.FE_activation;
     }
 }
