@@ -83,7 +83,7 @@ public class GeneratorContainerGui extends GuiContainer {
         Slot slot = getSlotUnderMouse();
         if (slot != null && slot.getHasStack()) {
             ItemStack stack = slot.getStack();
-            if (!stack.isEmpty()) {
+            if (stack != null) {
                 List<String> tooltip = stack.getTooltip(Minecraft.getMinecraft().player, false);
                 int max = stack.getMaxStackSize();
                 int burntime = TileEntityFurnace.getItemBurnTime(stack);
@@ -93,12 +93,12 @@ public class GeneratorContainerGui extends GuiContainer {
                     tooltip.add(String.format("Burn time / %s: ", Integer.toString(max)) + TextHelper.getTimeText(maxBurn));
                     int peritem = te.getGeneration() * burntime;
                     tooltip.add("FE per item: " + TextHelper.getEnergyText(peritem) + " FE");
-                    int total = peritem * stack.getCount();
+                    int total = peritem * stack.stackSize;
                     tooltip.add("FE per this stack: " + TextHelper.getEnergyText(total) + " FE");
                 }
                 FontRenderer font = stack.getItem().getFontRenderer(stack);
                 net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
-                this.drawHoveringText(tooltip, mouseX - guiLeft, mouseY - guiTop, (font == null ? fontRenderer : font));
+                this.drawHoveringText(tooltip, mouseX - guiLeft, mouseY - guiTop, fontRenderer);
                 net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
             }
         }

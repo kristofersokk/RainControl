@@ -1,5 +1,6 @@
 package com.timotheteus.raincontrol;
 
+import com.timotheteus.raincontrol.config.ModConfig;
 import com.timotheteus.raincontrol.proxy.CommonProxy;
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,8 +13,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(modid = ModUtil.MOD_ID,
         name = ModUtil.NAME,
         version = ModUtil.VERSION,
-        acceptedMinecraftVersions = "[1.11, 1.12)",
-        dependencies = "required-after:tesla;"
+        acceptedMinecraftVersions = "[1.10, 1.11)",
+        dependencies = "required-after:tesla;",
+        guiFactory = "com.timotheteus.raincontrol.config.GuiConfigFactory"
 )
 @Mod.EventBusSubscriber
 public class RainControl {
@@ -28,6 +30,7 @@ public class RainControl {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(proxy);//NB! Needed for models to be registered
+        MinecraftForge.EVENT_BUS.register(new ModConfig());
         proxy.preInit(event);
     }
     @Mod.EventHandler

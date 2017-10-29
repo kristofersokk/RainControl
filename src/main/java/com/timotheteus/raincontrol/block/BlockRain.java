@@ -36,7 +36,7 @@ public class BlockRain extends BlockBase implements ITileEntityProvider{
 	}
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack facing, EnumFacing hitX, float hitY, float hitZ, float p_180639_10_) {
         TileEntity te = worldIn.getTileEntity(pos);
         if (te != null && te instanceof TileEntityRainBlock){
             try {

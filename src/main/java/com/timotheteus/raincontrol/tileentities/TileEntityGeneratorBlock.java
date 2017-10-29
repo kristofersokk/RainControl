@@ -1,6 +1,6 @@
 package com.timotheteus.raincontrol.tileentities;
 
-import com.timotheteus.raincontrol.config.ConfigHandler;
+import com.timotheteus.raincontrol.config.ModConfig;
 import com.timotheteus.raincontrol.gui.CustomSlot;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import net.minecraft.entity.player.EntityPlayer;
@@ -144,13 +144,13 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
         return energy;
     }
 
-    @Override
-    public int getMaxEnergyStored() {
-        return ConfigHandler.generator.capacity;
+    public static int getMaxOutput() {
+        return ModConfig.GENERATOR.maxOutput;
     }
 
-    public static int getMaxOutput() {
-        return ConfigHandler.generator.maxOutput;
+    @Override
+    public int getMaxEnergyStored() {
+        return ModConfig.GENERATOR.capacity;
     }
 
     @Override
@@ -235,7 +235,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int getGeneration() {
-        return ConfigHandler.generator.generation;
+        return ModConfig.GENERATOR.generation;
     }
 
 
