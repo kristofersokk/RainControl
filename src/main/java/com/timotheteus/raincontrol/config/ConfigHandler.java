@@ -72,6 +72,7 @@ public class ConfigHandler {
 
         @Config.Comment("Sensor delay [needs world restart]")
         @Config.RangeInt(min = 1)
+        @Config.RequiresWorldRestart
         public int delay = 40;
     }
 
