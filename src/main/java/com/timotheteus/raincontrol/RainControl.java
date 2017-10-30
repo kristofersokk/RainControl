@@ -25,7 +25,6 @@ public class RainControl {
     @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
     private static CommonProxy proxy;
 
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(proxy);//NB! Needed for models to be registered
@@ -39,14 +38,5 @@ public class RainControl {
     public void postInit(FMLPostInitializationEvent event){
         proxy.postInit(event);
     }
-
-
-//    @SubscribeEvent
-//    public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
-//        Entity entity = event.player;
-//        if (entity instanceof EntityPlayerMP) {
-//            new PacketConfig().sendTo((EntityPlayerMP) entity);
-//        }
-//    }
 
 }

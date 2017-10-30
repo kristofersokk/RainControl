@@ -10,3 +10,4 @@ SolarFluxReborn-1.12
 .gradle
 .idea
 src/test/
+/RainControl.iml
