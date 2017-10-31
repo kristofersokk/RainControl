@@ -11,3 +11,6 @@ SolarFluxReborn-1.12
 .idea
 src/api/
 src/test/
+/gradlew
+/gradlew.bat
+/RainControl.iml
