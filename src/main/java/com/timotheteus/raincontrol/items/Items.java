@@ -34,7 +34,6 @@ public class Items {
 
     @SideOnly(Side.CLIENT)
     public static void initModels() {
-//        blockRain.initModel();
         registerItemBlockModel(blockRain_item);
         registerItemBlockModel(blockgenerator_item);
         registerItemBlockModel(blocksensor_item);
@@ -43,7 +42,6 @@ public class Items {
     @SideOnly(Side.CLIENT)
     private static void registerItemBlockModel(ItemBlockBase item) {
         ModelResourceLocation location = new ModelResourceLocation(item.getModelName());
-//        ModelBakery.registerItemVariants(item, location);
         ModelLoader.setCustomModelResourceLocation(item, 0, location);
     }
 }
