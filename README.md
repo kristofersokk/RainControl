@@ -5,3 +5,6 @@ There's 3 blocks:
 Rain block can toggle rain in the world, can be activated with either freely, using FE energy or XP levels.
 Generator burns things and generates FE (Forge Energy).
 Sensor emits redstone when it's raining.
+
+Main mod page:
+https://minecraft.curseforge.com/projects/rain-control
