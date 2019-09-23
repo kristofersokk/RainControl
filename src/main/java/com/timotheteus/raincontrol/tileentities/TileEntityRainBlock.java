@@ -5,23 +5,21 @@ import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import com.timotheteus.raincontrol.util.PlayerHelper;
 import com.timotheteus.raincontrol.util.TextHelper;
 import com.timotheteus.raincontrol.util.WorldHelper;
-import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.timotheteus.raincontrol.config.ConfigHandler.ActivationType.FE;
 
 public class TileEntityRainBlock extends TileEntityBase implements Property.Energy, Energy.Consumer {
 
@@ -31,17 +29,15 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
     private int energy = 0;
     private int cooldown = 0;
     private static final Capability[] capabilities = new Capability[]{
-            CapabilityEnergy.ENERGY,
-            TeslaCapabilities.CAPABILITY_HOLDER,
-            TeslaCapabilities.CAPABILITY_CONSUMER
+            CapabilityEnergy.ENERGY
     };
 
     public TileEntityRainBlock() {
-        super(new ModuleTypes[]{}, new Object[][]{});
+        super(RainControlTileEntityType.RAIN, new ModuleTypes[]{}, new Object[][]{});
     }
 
     public void activated(@Nullable EntityPlayer player, boolean shiftKeyDown){
-        switch (ConfigHandler.rainBlock.type){
+        switch (ConfigHandler.RAIN_BLOCK.type.get()){
             case FREE:
                 activatedFree(player);
                 break;
@@ -62,7 +58,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
         if (!world.isRemote){
             List<EntityPlayer> somePlayers = WorldHelper.getPlayersWithinRange(world, pos, 30, WorldHelper.Shape.ROUND);
             List<EntityPlayer> allPlayers = WorldHelper.getAllPlayersInDimension(world);
-            if (!needsSky() || needsSky() && world.canSeeSky(pos.up())) {
+            if (!needsSky() || world.canSeeSky(pos.up())) {
                 if (cooldown == 0) {
                     cooldown = cooldownLength;
                     if (world.getWorldInfo().isRaining()) {
@@ -87,36 +83,20 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
         if (!world.isRemote){
             ArrayList<EntityPlayer> somePlayers = WorldHelper.getPlayersWithinRange(world, pos, 30, WorldHelper.Shape.ROUND);
             List<EntityPlayer> allPlayers = WorldHelper.getAllPlayersInDimension(world);
-            if (!needsSky() || needsSky() && world.canSeeSky(pos.up())) {
+            if (!needsSky() || world.canSeeSky(pos.up())) {
                 if (player != null){
                     if (!shiftKeyDown) {
                         TextHelper.chatMessageServer(player, "Energy: " + TextHelper.getEnergyText(energy) + " FE");
                     } else if (cooldown == 0) {
                         if (energy >= getActivation()) {
-                            changeEnergy(-getActivation(), true);
-                            cooldown = cooldownLength;
-                            if (world.getWorldInfo().isRaining()) {
-                                world.getWorldInfo().setRaining(false);
-                                TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Stopping rain");
-                            } else {
-                                world.getWorldInfo().setRaining(true);
-                                TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Starting rain");
-                            }
+                            activateRainBlock(allPlayers);
                         } else {
                             TextHelper.chatMessageServer(player, "Not enough energy. Energy: " + TextHelper.getEnergyText(energy) + " FE");
                         }
                     }
                 }else if (cooldown == 0){
                     if (energy >= getActivation()) {
-                        changeEnergy(-getActivation(), true);
-                        cooldown = cooldownLength;
-                        if (world.getWorldInfo().isRaining()) {
-                            world.getWorldInfo().setRaining(false);
-                            TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Stopping rain");
-                        } else {
-                            world.getWorldInfo().setRaining(true);
-                            TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Starting rain");
-                        }
+                        activateRainBlock(allPlayers);
                     } else {
                         TextHelper.chatMessageServer(somePlayers, getDesciptiveString() + "Not enough energy. Energy: " + TextHelper.getEnergyText(energy) + " FE");
                     }
@@ -131,15 +111,27 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
         }
     }
 
+    private void activateRainBlock(List<EntityPlayer> allPlayers) {
+        changeEnergy(-getActivation(), true);
+        cooldown = cooldownLength;
+        if (world.getWorldInfo().isRaining()) {
+            world.getWorldInfo().setRaining(false);
+            TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Stopping rain");
+        } else {
+            world.getWorldInfo().setRaining(true);
+            TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Starting rain");
+        }
+    }
+
     private void activatedXP(@Nullable EntityPlayer player){
         if (!world.isRemote){
             ArrayList<EntityPlayer> somePlayers = WorldHelper.getPlayersWithinRange(world, pos, 30, WorldHelper.Shape.ROUND);
             List<EntityPlayer> allPlayers = WorldHelper.getAllPlayersInDimension(world);
             //just to check if there is a player
             if (player != null){
-                if (!needsSky() || needsSky() && world.canSeeSky(pos.up())) {
+                if (!needsSky() || world.canSeeSky(pos.up())) {
                     if (cooldown == 0) {
-                        if (PlayerHelper.removeXPLevels(player, ConfigHandler.rainBlock.XP_levels, pos, true)) {
+                        if (PlayerHelper.removeXPLevels(player, ConfigHandler.RAIN_BLOCK.XP_levels.get(), pos, true)) {
                             cooldown = cooldownLength;
                             if (world.getWorldInfo().isRaining()) {
                                 world.getWorldInfo().setRaining(false);
@@ -149,7 +141,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
                                 TextHelper.chatMessageServer(allPlayers, getDesciptiveString() + "Starting rain");
                             }
                         } else {
-                            TextHelper.chatMessageServer(player, "Not enough levels. " + ConfigHandler.rainBlock.XP_levels + " levels needed.");
+                            TextHelper.chatMessageServer(player, "Not enough levels. " + ConfigHandler.RAIN_BLOCK.XP_levels.get() + " levels needed.");
                             cooldown = 10;
                         }
                     }
@@ -168,12 +160,12 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
     }
 
     @Override
-    public void update() {
-        //server
-        if (!world.isRemote){
+    public void tick() {
 
+        //server
+        if (world != null && !world.isRemote){
             boolean prevRedstone = redstone;
-            redstone = getWorld().isBlockPowered(this.pos);
+            redstone = world.isBlockPowered(this.pos);
             if (!prevRedstone && redstone)
                 activated(null, false);
             if (cooldown > 0)
@@ -188,7 +180,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
     }
 
     private boolean needsSky(){
-        return ConfigHandler.rainBlock.needsSky;
+        return ConfigHandler.RAIN_BLOCK.needsSky.get();
     }
 
     @Override
@@ -226,7 +218,7 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public int getMaxEnergyStored() {
-        return ConfigHandler.rainBlock.FE_capacity;
+        return ConfigHandler.RAIN_BLOCK.FE_capacity.get();
     }
 
     @Override
@@ -236,24 +228,26 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
 
     @Override
     public boolean canReceive() {
-        return ConfigHandler.rainBlock.type == ConfigHandler.ActivationType.FE;
+        return ConfigHandler.RAIN_BLOCK.type.get() == FE;
+    }
+
+
+    @Override
+    public void read(NBTTagCompound compound) {
+        energy = compound.getInt("energy");
+        super.read(compound);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        energy = compound.getInteger("energy");
-        super.readFromNBT(compound);
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        compound.setInteger("energy", energy);
-        return super.writeToNBT(compound);
+    @Nonnull
+    public NBTTagCompound write(NBTTagCompound compound) {
+        compound.putInt("energy", energy);
+        return super.write(compound);
     }
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
+        if (ConfigHandler.RAIN_BLOCK.type.get() != FE)
             return 0;
         int received = Math.min(getMaxInput(), Math.min(getMaxEnergyStored() - energy, maxReceive));
         if (!simulate) {
@@ -262,84 +256,35 @@ public class TileEntityRainBlock extends TileEntityBase implements Property.Ener
         return received;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (ConfigHandler.rainBlock.type != ConfigHandler.ActivationType.FE)
-            return false;
-        return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
         if (Arrays.asList(capabilities).contains(capability)) {
-            return capability.cast((T) this);
+            return capability.orEmpty(capability, LazyOptional.empty());
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     @Override
+    @Nonnull
     public NBTTagCompound getUpdateTag() {
         NBTTagCompound compound = getTileData();
-        compound.setInteger("energy", energy);
+        compound.putInt("energy", energy);
         return compound;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         NBTTagCompound compound = pkt.getNbtCompound();
-        energy = compound.getInteger("energy");
+        energy = compound.getInt("energy");
         sync();
     }
 
-    @Override
-    public long givePower(long power, boolean simulated) {
-        long received = Math.min(getMaxInput(), Math.min(getMaxEnergyStored() - energy, power));
-        if (!simulated) {
-            changeEnergy((int) received, true);
-        }
-        return received;
-    }
-
-    @Override
-    public long getStoredPower() {
-        return energy;
-    }
-
-    @Override
-    public long getCapacity() {
-        return getMaxEnergyStored();
-    }
-
-    @Override
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        int received = Math.min(getMaxInput(), Math.min(getMaxEnergyStored() - energy, maxReceive));
-        if (!simulate) {
-            changeEnergy(received, true);
-        }
-        return received;
-    }
-
-    @Override
-    public int getEnergyStored(EnumFacing from) {
-        return energy;
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing from) {
-        return getMaxEnergyStored();
-    }
-
-    @Override
-    public boolean canConnectEnergy(EnumFacing from) {
-        return true;
-    }
-
     public int getMaxInput() {
-        return ConfigHandler.rainBlock.FE_maxInput;
+        return ConfigHandler.RAIN_BLOCK.FE_maxInput.get();
     }
 
     public int getActivation() {
-        return ConfigHandler.rainBlock.FE_activation;
+        return ConfigHandler.RAIN_BLOCK.FE_activation.get();
     }
 }

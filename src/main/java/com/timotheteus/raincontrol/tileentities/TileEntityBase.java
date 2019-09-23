@@ -6,6 +6,8 @@ import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBed;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,7 +20,8 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
     @Nullable
     private final Module[] modules;
 
-    TileEntityBase(ModuleTypes[] moduleTypes, Object[][] objects) {
+    TileEntityBase(TileEntityType type, ModuleTypes[] moduleTypes, Object[][] objects) {
+        super(type);
         Module[] modules = new Module[moduleTypes.length];
         for (int i = 0; i < modules.length; i++) {
             ModuleTypes module = moduleTypes[i];
@@ -30,14 +33,15 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
         this.modules = modules;
     }
 
-    public TileEntityBase() {
+    public TileEntityBase(TileEntityType type) {
+        super(type);
         modules = null;
     }
 
     boolean sync = false;
 
     @Override
-    public void update() {
+    public void tick() {
         sync = false;
         if (modules != null){
             for (Module module : modules) {
@@ -51,7 +55,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
     }
 
     public void dropInventory(World world, BlockPos pos, TileEntityBase te) {
-        if (te != null && te instanceof Inventory) {
+        if (te instanceof Inventory) {
             ((Inventory) te).getSlotsHandler().dropInventory(world, pos);
         }
     }

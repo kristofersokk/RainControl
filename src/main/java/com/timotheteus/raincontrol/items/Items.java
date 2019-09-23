@@ -3,45 +3,45 @@ package com.timotheteus.raincontrol.items;
 import com.timotheteus.raincontrol.block.Blocks;
 import com.timotheteus.raincontrol.block.ItemBlockBase;
 import com.timotheteus.raincontrol.items.itemblocks.ItemRainBlock;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import com.timotheteus.raincontrol.util.ModUtil;
+import com.timotheteus.raincontrol.util.Names;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
-@Mod.EventBusSubscriber
+import static net.minecraft.item.ItemGroup.MISC;
+
 public class Items {
 
+    @ObjectHolder(Names.BLOCK_RAIN)
     public static ItemRainBlock blockRain_item;
+
+    @ObjectHolder(Names.BLOCK_GENERATOR)
     public static ItemBlockBase blockgenerator_item;
+
+    @ObjectHolder(Names.BLOCK_SENSOR)
     public static ItemBlockBase blocksensor_item;
 
-    @SubscribeEvent
-    public static void init(RegistryEvent.Register<Item> event) {
-        blockRain_item = new ItemRainBlock(Blocks.blockRain);
-        blockgenerator_item = new ItemBlockBase(Blocks.blockGenerator);
-        blocksensor_item = new ItemBlockBase(Blocks.blockSensor);
+    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = ModUtil.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class Registration {
 
-        event.getRegistry().registerAll(
-                blockRain_item,
-                blockgenerator_item,
-                blocksensor_item
-        );
+        @SubscribeEvent
+        public static void registerItems(final RegistryEvent.Register<Item> event)
+        {
+            IForgeRegistry<Item> itemRegistry = event.getRegistry();
+
+            Item.Properties properties = (new Item.Properties()).group(MISC);
+
+            itemRegistry.register(new ItemRainBlock(Blocks.blockRain, properties));
+            itemRegistry.register(new ItemBlockBase(Blocks.blockGenerator, properties));
+            itemRegistry.register(new ItemBlockBase(Blocks.blockSensor, properties));
+        }
     }
 
-    @SideOnly(Side.CLIENT)
-    public static void initModels() {
-        registerItemBlockModel(blockRain_item);
-        registerItemBlockModel(blockgenerator_item);
-        registerItemBlockModel(blocksensor_item);
-    }
 
-    @SideOnly(Side.CLIENT)
-    private static void registerItemBlockModel(ItemBlockBase item) {
-        ModelResourceLocation location = new ModelResourceLocation(item.getModelName());
-        ModelLoader.setCustomModelResourceLocation(item, 0, location);
-    }
 }

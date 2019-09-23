@@ -6,19 +6,22 @@ import com.timotheteus.raincontrol.util.CustomItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityInventoryBase extends TileEntityBase implements Inventory, IInventory {
+public abstract class TileEntityInventoryBase extends TileEntityBase implements Inventory, IInventory, IGUITile {
 
     private static final int SIZE = 1;
     private static final ItemStack EMPTY = ItemStack.EMPTY;
-    final CustomItemStackHandler itemStackHandler;
+    @Nonnull final CustomItemStackHandler itemStackHandler;
     private final CustomSlot.StackFilter filter;
 
-    TileEntityInventoryBase(ModuleTypes[] moduleTypes, Object[][] objects, @Nullable CustomSlot.StackFilter filter) {
-        super(moduleTypes, objects);
+    TileEntityInventoryBase(TileEntityType type, ModuleTypes[] moduleTypes, Object[][] objects, @Nullable CustomSlot.StackFilter filter) {
+        super(type, moduleTypes, objects);
         itemStackHandler = new CustomItemStackHandler(SIZE, filter) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -39,6 +42,7 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
     }
 
     @Override
+    @Nonnull
     public ItemStack getStackInSlot(int index) {
         return itemStackHandler.getStackInSlot(index);
     }
@@ -52,17 +56,18 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
     }
 
     @Override
+    @Nonnull
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack = getStackInSlot(index).copy();
         if (stack.getCount() > count) {
             stack.setCount(stack.getCount() - count);
             return stack;
-        } else {
-            return EMPTY.copy();
         }
+        return EMPTY.copy();
     }
 
     @Override
+    @Nonnull
     public ItemStack removeStackFromSlot(int index) {
         itemStackHandler.setStackInSlot(index, EMPTY.copy());
         return EMPTY.copy();
@@ -90,20 +95,20 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
         return this.world.getTileEntity(this.getPos()) == this && player.getDistanceSq(this.pos.add(0.5, 0.5, 0.5)) <= 64;
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(@Nonnull EntityPlayer player) {
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(@Nonnull EntityPlayer player) {
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
         return filter == null || filter.isValid(stack);
     }
 
@@ -129,13 +134,31 @@ public class TileEntityInventoryBase extends TileEntityBase implements Inventory
     }
 
     @Override
-    public String getName() {
-        return "";
-    }
+    public abstract int getHeight();
+
+    @Override
+    public abstract int getWidth();
+
+    @Override
+    public abstract ITextComponent getName();
 
     @Override
     public boolean hasCustomName() {
         return false;
     }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return getName();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return new TextComponentString("");
+    }
+
+    @Override
+    public abstract void tick();
 
 }

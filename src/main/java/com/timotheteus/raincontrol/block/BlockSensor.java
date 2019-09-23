@@ -1,74 +1,64 @@
 package com.timotheteus.raincontrol.block;
 
+import com.timotheteus.raincontrol.block.properties.RainSensorProperty;
 import com.timotheteus.raincontrol.config.ConfigHandler;
 import com.timotheteus.raincontrol.tileentities.TileEntitySensor;
 import com.timotheteus.raincontrol.util.Delay;
 import com.timotheteus.raincontrol.util.Names;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class BlockSensor extends BlockContainerBase {
 
-    private static final PropertyBool POWER = PropertyBool.create("power");
+    private static final RainSensorProperty POWER = new RainSensorProperty();
     private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.375D, 1.0D);
     private Delay rain;
 
     public BlockSensor() {
-        super(TileEntitySensor.class, Material.IRON, Names.BLOCK_SENSOR);
-        setDefaultState(blockState.getBaseState().withProperty(POWER, false));
-        setCreativeTab(CreativeTabs.MISC);
-        setHardness(6);
-        setSoundType(SoundType.METAL);
-        rain = new Delay(ConfigHandler.sensor.delay);
+        super(TileEntitySensor.class,
+                Properties.create(Material.IRON)
+                    .hardnessAndResistance(6f, 10f)
+                    .sound(SoundType.METAL),
+                Names.BLOCK_SENSOR);
+        setDefaultState(getStateFromMeta(0));
+        rain = new Delay(ConfigHandler.SENSOR.delay.get());
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return AABB;
-    }
-
-    @Override
-    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side) {
+    public boolean canConnectRedstone(IBlockState state, IBlockReader world, BlockPos pos, @Nullable EnumFacing side) {
         return true;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-        return blockState.getValue(POWER) ? 15 : 0;
+    public AxisAlignedBB getRenderBoundingBox() {
+        return AABB;
+    }
+
+    @Override
+    public int getWeakPower(IBlockState blockState, IBlockReader blockAccess, BlockPos pos, EnumFacing side) {
+        return blockState.get(POWER);
     }
 
     public void updatePower(World world, BlockPos pos){
         rain.tick(world.getWorldInfo().isRaining());
         IBlockState blockState = world.getBlockState(pos);
-        if (blockState.getValue(POWER) && rain.all(false)//it hasn't been raining the last 70 ticks
-                || !blockState.getValue(POWER) && rain.all(true))
-            world.setBlockState(pos, blockState.withProperty(POWER, rain.getLast()), 3);
+        if (blockState.get(POWER) == 15 && rain.all(false)//it hasn't been raining the last 70 ticks
+                || blockState.get(POWER) == 0 && rain.all(true))
+            world.setBlockState(pos, blockState.with(POWER, rain.getLast() ? 15 : 0));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isNormalCube(IBlockState state, IBlockReader world, BlockPos pos) {
         return false;
     }
 
@@ -77,31 +67,17 @@ public class BlockSensor extends BlockContainerBase {
         return EnumBlockRenderType.MODEL;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean canProvidePower(IBlockState state) {
-        return true;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(POWER, meta != 0);
+        return getDefaultState().with(POWER, meta);
     }
 
-    @Override
     public int getMetaFromState(IBlockState state) {
-        return state.getValue(POWER) ? 1 : 0;
+        return state.get(POWER);
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, POWER);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
+    public BlockFaceShape getBlockFaceShape(IBlockReader worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
+
 }

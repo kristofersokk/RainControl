@@ -1,53 +1,53 @@
 package com.timotheteus.raincontrol.handlers;
 
-import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
-import com.timotheteus.raincontrol.gui.gui.GeneratorContainerGui;
-import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
+import com.timotheteus.raincontrol.tileentities.IGUITile;
+import com.timotheteus.raincontrol.tileentities.TileEntityInventoryBase;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+public class GuiHandler implements IGuiHandler {
 
-public class GuiHandler implements IGuiHandler{
+    public static GuiScreen openGui(FMLPlayMessages.OpenContainer openContainer) {
+        BlockPos pos = openContainer.getAdditionalData().readBlockPos();
+//        new GUIChest(type, (IInventory) Minecraft.getInstance().player.inventory, (IInventory) Minecraft.getInstance().world.getTileEntity(pos));
+        TileEntityInventoryBase te = (TileEntityInventoryBase) Minecraft.getInstance().world.getTileEntity(pos);
+        if (te != null) {
+            return te.createGui(Minecraft.getInstance().player);
+        }
+        return null;
+    }
 
-	public GuiHandler() {
-		
-	}
-
-    public static final int GUY_FURNACEBLOCK = 0;
+    //TODO can remove these, I think
 
     @Nullable
     @Override
-    @SideOnly(Side.CLIENT)
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         TileEntity te = world.getTileEntity(pos);
-        switch (ID) {
-            case GUY_FURNACEBLOCK:
-                return new ContainerGenerator(player.inventory, (TileEntityGeneratorBlock) te);
+        if (te instanceof IGUITile) {
+            return ((IGUITile) te).createContainer(player);
         }
-
         return null;
     }
 
     @Nullable
     @Override
-    @SideOnly(Side.CLIENT)
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         TileEntity te = world.getTileEntity(pos);
-        switch (ID) {
-            case GUY_FURNACEBLOCK:
-                TileEntityGeneratorBlock containerTE = (TileEntityGeneratorBlock) te;
-                return new GeneratorContainerGui(containerTE, new ContainerGenerator(player.inventory, containerTE));
+        if (te instanceof IGUITile) {
+            return ((IGUITile) te).createGui(player);
         }
-
         return null;
     }
 

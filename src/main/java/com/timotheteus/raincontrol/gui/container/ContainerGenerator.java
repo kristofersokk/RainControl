@@ -7,8 +7,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 public class ContainerGenerator extends Container {
@@ -34,7 +32,7 @@ public class ContainerGenerator extends Container {
             for (int col = 0; col < 9; ++col) {
                 int x = 10 + col * 18;
                 int y = row * 18 + 59;
-                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 10, x, y));
+                this.addSlot(new Slot(playerInventory, col + row * 9 + 10, x, y));
             }
         }
 
@@ -42,24 +40,27 @@ public class ContainerGenerator extends Container {
         for (int row = 0; row < 9; ++row) {
             int x = 10 + row * 18;
             int y = 58 + 59;
-            this.addSlotToContainer(new Slot(playerInventory, row, x, y));
+            this.addSlot(new Slot(playerInventory, row, x, y));
         }
     }
 
     private static final CustomSlot.StackFilter filter = CustomSlot.StackFilter.GENERATOR;
 
     private void addOwnSlots() {
-        IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        int x = 70;
-        int y = 21;
+        if (this.te != null) {
+            IItemHandler itemHandler = this.te.getSlotsHandler();
+            int x = 70;
+            int y = 21;
 
-        // Add our own slots
-        int slotIndex = 0;
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            addSlotToContainer(new CustomSlot(itemHandler, slotIndex, x, y, filter));
-            slotIndex++;
-            x += 18;
+            // Add our own slots
+            int slotIndex = 0;
+            for (int i = 0; i < itemHandler.getSlots(); i++) {
+                addSlot(new CustomSlot(itemHandler, slotIndex, x, y, filter));
+                slotIndex++;
+                x += 18;
+            }
         }
+
     }
 
     @Override
@@ -74,18 +75,18 @@ public class ContainerGenerator extends Container {
             //Other Slots in Inventory excluded
             if (index >= inventoryStart) {
                 //Shift from Inventory
-                if (TileEntityFurnace.getItemBurnTime(newStack) > 0) {
+                if (CustomSlot.getBurnTime(newStack) > 0) {
                     if (!this.mergeItemStack(newStack, 0, 1, false)) {
                         return ItemStack.EMPTY.copy();
                     }
                 }
                 //
 
-                else if (index >= inventoryStart && index <= inventoryEnd) {
+                else if (index <= inventoryEnd) {
                     if (!this.mergeItemStack(newStack, hotbarStart, hotbarEnd + 1, false)) {
                         return ItemStack.EMPTY.copy();
                     }
-                } else if (index >= inventoryEnd + 1 && index < hotbarEnd + 1 && !this.mergeItemStack(newStack, inventoryStart, inventoryEnd + 1, false)) {
+                } else if (index < hotbarEnd + 1 && !this.mergeItemStack(newStack, inventoryStart, inventoryEnd + 1, false)) {
                     return ItemStack.EMPTY.copy();
                 }
             } else if (!this.mergeItemStack(newStack, inventoryStart, hotbarEnd + 1, false)) {

@@ -5,6 +5,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CustomSlot extends SlotItemHandler {
@@ -17,8 +18,12 @@ public class CustomSlot extends SlotItemHandler {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
-        return filter.isValid(stack);
+    public boolean isItemValid(@Nonnull ItemStack stack) {
+        return filter != null && filter.isValid(stack);
+    }
+
+    public static int getBurnTime(ItemStack stack) {
+        return TileEntityFurnace.getBurnTimes().getOrDefault(stack.getItem(), 0) * stack.getCount();
     }
 
     public enum StackFilter {
@@ -31,7 +36,7 @@ public class CustomSlot extends SlotItemHandler {
         public boolean isValid(ItemStack stack) {
             switch (this) {
                 case GENERATOR:
-                    if (TileEntityFurnace.getItemBurnTime(stack) == 0)
+                    if (getBurnTime(stack) == 0)
                         return false;
             }
             return true;

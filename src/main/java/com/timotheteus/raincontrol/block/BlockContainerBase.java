@@ -4,19 +4,22 @@ import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockReader;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.extensions.IForgeTileEntity;
+import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class BlockContainerBase extends BlockContainer implements BaseBlock {
+public class BlockContainerBase extends BlockContainer implements BaseBlock, IForgeTileEntity {
 
-    public BlockContainerBase(Class<? extends TileEntityBase> tileEntity, Material materialIn, String id) {
-        super(materialIn, MapColor.GRAY);
-        this.setUnlocalizedName(ModUtil.MOD_ID + "." + id);
-        this.setRegistryName(id);
+    public BlockContainerBase(Class<? extends TileEntityBase> tileEntity, Properties properties, String id) {
+        super(properties);
+        this.setRegistryName(ModUtil.MOD_ID, id);
         this.id = id;
         this.tileEntity = tileEntity;
     }
@@ -34,17 +37,6 @@ public class BlockContainerBase extends BlockContainer implements BaseBlock {
         return ModUtil.MOD_ID + "_" + id;
     }
 
-    @Nullable
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        try {
-            return tileEntity.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @Override
     public String getId() {
         return id;
@@ -53,5 +45,33 @@ public class BlockContainerBase extends BlockContainer implements BaseBlock {
     @Override
     public Block getBlock() {
         return this;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
+        try {
+            return tileEntity.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        return LazyOptional.empty();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+        return LazyOptional.empty();
+    }
+
+    @Override
+    public NBTTagCompound getTileData() {
+        return new NBTTagCompound();
     }
 }

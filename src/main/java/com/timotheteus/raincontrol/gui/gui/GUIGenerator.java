@@ -1,5 +1,6 @@
 package com.timotheteus.raincontrol.gui.gui;
 
+import com.timotheteus.raincontrol.gui.CustomSlot;
 import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.ModUtil;
@@ -8,14 +9,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GeneratorContainerGui extends GuiContainer {
+public class GUIGenerator extends GuiContainer {
 
     private static final int WIDTH = 180;
     private static final int HEIGHT = 141;
@@ -24,7 +24,7 @@ public class GeneratorContainerGui extends GuiContainer {
     private static final ResourceLocation generator = new ResourceLocation(ModUtil.MOD_ID, "textures/gui/generator/generator.png");
     private final TileEntityGeneratorBlock te;
 
-    public GeneratorContainerGui(TileEntityGeneratorBlock tileEntity, ContainerGenerator container) {
+    public GUIGenerator(TileEntityGeneratorBlock tileEntity, ContainerGenerator container) {
         super(container);
 
         xSize = WIDTH;
@@ -60,12 +60,6 @@ public class GeneratorContainerGui extends GuiContainer {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
@@ -85,14 +79,14 @@ public class GeneratorContainerGui extends GuiContainer {
             if (!stack.isEmpty()) {
                 List<String> tooltip = this.getItemToolTip(stack);
                 int max = stack.getMaxStackSize();
-                int burntime = TileEntityFurnace.getItemBurnTime(stack);
-                if (burntime != 0) {
-                    tooltip.add("Burn time / 1: " + TextHelper.getTimeText(burntime));
-                    int maxBurn = burntime * max;
+                int burnTime = CustomSlot.getBurnTime(stack);
+                if (burnTime != 0) {
+                    tooltip.add("Burn time / 1: " + TextHelper.getTimeText(burnTime));
+                    int maxBurn = burnTime * max;
                     tooltip.add(String.format("Burn time / %s: ", Integer.toString(max)) + TextHelper.getTimeText(maxBurn));
-                    int peritem = te.getGeneration() * burntime;
-                    tooltip.add("FE per item: " + TextHelper.getEnergyText(peritem) + " FE");
-                    int total = peritem * stack.getCount();
+                    int perItem = te.getGeneration() * burnTime;
+                    tooltip.add("FE per item: " + TextHelper.getEnergyText(perItem) + " FE");
+                    int total = perItem * stack.getCount();
                     tooltip.add("FE per this stack: " + TextHelper.getEnergyText(total) + " FE");
                 }
                 FontRenderer font = stack.getItem().getFontRenderer(stack);

@@ -2,15 +2,13 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
 abstract class BlockBase extends Block implements BaseBlock {
 
-    BlockBase(Material blockMaterialIn, String id) {
-        super(blockMaterialIn, MapColor.GRAY);
-        this.setUnlocalizedName(ModUtil.MOD_ID + "." + id);
-        this.setRegistryName(id);
+    BlockBase(String id, Properties properties) {
+        super(properties);
+        this.setRegistryName(ModUtil.MOD_ID, id);
         this.id = id;
     }
 

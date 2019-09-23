@@ -2,34 +2,32 @@ package com.timotheteus.raincontrol.tileentities;
 
 import com.timotheteus.raincontrol.config.ConfigHandler;
 import com.timotheteus.raincontrol.gui.CustomSlot;
+import com.timotheteus.raincontrol.gui.container.ContainerGenerator;
+import com.timotheteus.raincontrol.gui.gui.GUIGenerator;
 import com.timotheteus.raincontrol.tileentities.modules.ModuleTypes;
+import com.timotheteus.raincontrol.util.Names;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
-import java.util.Arrays;
+import javax.annotation.Nullable;
 
 public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements Property.Energy, Property.BurnTime, Energy.Producer {
 
-    private static final Capability[] capabilities = new Capability[]{
-            CapabilityEnergy.ENERGY,
-            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
-    };
     private int energy;
     public int maxBurnTimeLeft;
     public int burnTimeLeft;
 
     public TileEntityGeneratorBlock() {
-        super(new ModuleTypes[]{
+        super(RainControlTileEntityType.GENERATOR,
+                new ModuleTypes[]{
                 ModuleTypes.ENERGY_DISPENSER
         }, new Object[][]{
                 {getMaxOutput()}
@@ -40,7 +38,7 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (!world.isRemote) {
             //server-side
             boolean sync = false;
@@ -49,7 +47,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
                 sync = true;
             }
             int prevEnergy = energy;
-            super.update();
             if (super.sync)
                 sync = true;
             //burning
@@ -62,9 +59,9 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
                 }
             } else {
                 //not burning
-                if (!getWorld().isBlockPowered(getPos())) {
+                if (getWorld() != null && !getWorld().isBlockPowered(getPos())) {
                     ItemStack stack = itemStackHandler.getStackInSlot(0);
-                    int newBurnTime = TileEntityFurnace.getItemBurnTime(stack);
+                    int newBurnTime = TileEntityFurnace.getBurnTimes().getOrDefault(stack.getItem(), 0);
                     if (newBurnTime > 0) {
                         if (itemStackHandler.modifyStack(0, -1)) {
                             setBurnTime(newBurnTime, false);
@@ -86,43 +83,27 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        energy = compound.getInteger("energy");
-        burnTimeLeft = compound.getInteger("burnTime");
-        maxBurnTimeLeft = compound.getInteger("maxBurnTime");
-        if (compound.hasKey("items")) {
-            itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
+    public void read(NBTTagCompound compound) {
+        energy = compound.getInt("energy");
+        burnTimeLeft = compound.getInt("burnTime");
+        maxBurnTimeLeft = compound.getInt("maxBurnTime");
+        if (compound.contains("items")) {
+            itemStackHandler.deserializeNBT((NBTTagCompound) compound.get("items"));
         }
-        super.readFromNBT(compound);
+        super.read(compound);
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        compound.setInteger("energy", energy);
-        compound.setInteger("burnTime", burnTimeLeft);
-        compound.setInteger("maxBurnTime", maxBurnTimeLeft);
-        compound.setTag("items", itemStackHandler.serializeNBT());
-        return super.writeToNBT(compound);
+    public NBTTagCompound write(NBTTagCompound compound) {
+        compound.putInt("energy", energy);
+        compound.putInt("burnTime", burnTimeLeft);
+        compound.putInt("maxBurnTime", maxBurnTimeLeft);
+        compound.put("items", itemStackHandler.serializeNBT());
+        return super.write(compound);
     }
 
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return Arrays.asList(capabilities).contains(capability) || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (Arrays.asList(capabilities).contains(capability))
-            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemStackHandler);
-            } else {
-                return capability.cast((T)this);
-            }
-        return super.getCapability(capability, facing);
+        return playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
     }
 
     @Override
@@ -146,11 +127,11 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
 
     @Override
     public int getMaxEnergyStored() {
-        return ConfigHandler.generator.capacity;
+        return ConfigHandler.GENERATOR.capacity.get();
     }
 
     public static int getMaxOutput() {
-        return ConfigHandler.generator.maxOutput;
+        return ConfigHandler.GENERATOR.maxOutput.get();
     }
 
     @Override
@@ -199,76 +180,72 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
     @Override
     public NBTTagCompound getUpdateTag() {
         NBTTagCompound compound = getTileData();
-        compound.setInteger("energy", energy);
-        compound.setInteger("burnTime", burnTimeLeft);
-        compound.setInteger("maxBurnTime", maxBurnTimeLeft);
+        compound.putInt("energy", energy);
+        compound.putInt("burnTime", burnTimeLeft);
+        compound.putInt("maxBurnTime", maxBurnTimeLeft);
         return compound;
     }
 
     @Override
     public void handleUpdateTag(NBTTagCompound tag) {
-        energy = tag.getInteger("energy");
-        burnTimeLeft = tag.getInteger("burnTime");
-        maxBurnTimeLeft = tag.getInteger("maxBurnTime");
+        energy = tag.getInt("energy");
+        burnTimeLeft = tag.getInt("burnTime");
+        maxBurnTimeLeft = tag.getInt("maxBurnTime");
         super.handleUpdateTag(tag);
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         NBTTagCompound compound = pkt.getNbtCompound();
-        energy = compound.getInteger("energy");
-        burnTimeLeft = compound.getInteger("burnTime");
-        maxBurnTimeLeft = compound.getInteger("maxBurnTime");
+        energy = compound.getInt("energy");
+        burnTimeLeft = compound.getInt("burnTime");
+        maxBurnTimeLeft = compound.getInt("maxBurnTime");
         sync();
     }
 
     @Override
-    public long getStoredPower() {
-        return energy;
-    }
-
-    @Override
-    public long getCapacity() {
-        return getMaxEnergyStored();
-    }
-
-    @Override
     public int getGeneration() {
-        return ConfigHandler.generator.generation;
-    }
-
-
-    @Override
-    public long takePower(long power, boolean simulated) {
-        long extracted = Math.min(power, Math.min(getMaxOutput(), energy));
-        if (!simulated) {
-            changeEnergy(-(int) extracted, true);
-        }
-        return extracted;
+        return ConfigHandler.spec.getInt("generation");
     }
 
     @Override
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        int extracted = Math.min(maxExtract, Math.min(getMaxOutput(), energy));
-        if (!simulate) {
-            changeEnergy(-extracted, true);
-        }
-        return extracted;
+    public int getHeight() {
+        return 1;
     }
 
     @Override
-    public int getEnergyStored(EnumFacing from) {
-        return energy;
+    public int getWidth() {
+        return 1;
     }
 
     @Override
-    public int getMaxEnergyStored(EnumFacing from) {
-        return getMaxEnergyStored();
+    public ITextComponent getName() {
+        return new TextComponentTranslation(Names.TE_GENERATOR);
     }
 
     @Override
-    public boolean canConnectEnergy(EnumFacing from) {
-        return true;
+    public boolean hasCustomName() {
+        return false;
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return getName();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return null;
+    }
+
+    @Override
+    public Container createContainer(EntityPlayer player) {
+        return new ContainerGenerator(player.inventory, this);
+    }
+
+    @Override
+    public GuiContainer createGui(EntityPlayer player) {
+        return new GUIGenerator(this, new ContainerGenerator(player.inventory, this));
     }
 }

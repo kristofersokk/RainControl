@@ -1,8 +1,6 @@
 package com.timotheteus.raincontrol.tileentities.modules;
 
 public enum ModuleTypes {
-    ENERGY_DISPENSER;
+    ENERGY_DISPENSER
 
-    ModuleTypes() {
-    }
 }

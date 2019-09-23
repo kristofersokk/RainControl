@@ -1,45 +1,44 @@
 package com.timotheteus.raincontrol;
 
+import com.timotheteus.raincontrol.handlers.GuiHandler;
+import com.timotheteus.raincontrol.proxy.ClientProxy;
 import com.timotheteus.raincontrol.proxy.CommonProxy;
+import com.timotheteus.raincontrol.proxy.ServerProxy;
 import com.timotheteus.raincontrol.util.ModUtil;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(modid = ModUtil.MOD_ID,
-        name = ModUtil.NAME,
-        version = ModUtil.VERSION,
-        acceptedMinecraftVersions = "[1.12, 1.13)",
-        dependencies = "required-after:redstoneflux;" +
-                "required-after:tesla;"
-)
-@Mod.EventBusSubscriber
+//@Mod(modid = ModUtil.MOD_ID,
+//        name = ModUtil.NAME,
+//        version = ModUtil.VERSION,
+//        acceptedMinecraftVersions = "[1.12, 1.13)"
+//)
+@Mod(value = ModUtil.MOD_ID)
 public class RainControl {
 
-	@Mod.Instance(ModUtil.MOD_ID)
     public static RainControl instance;
 
-    @SidedProxy(clientSide = ModUtil.ClIENT_PROXY, serverSide = ModUtil.SERVER_PROXY)
-    private static CommonProxy proxy;
+    public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(proxy);//NB! Needed for models to be registered
-        proxy.preInit(event);
-    }
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event){
-        proxy.init(event);
-    }
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event){
-        proxy.postInit(event);
+    public RainControl() {
+        instance = this;
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::openGui);
     }
 
+    public void commonSetup(FMLCommonSetupEvent event) {
+        proxy.commonSetup(event);
+    }
+
+    public void clientSetup(FMLClientSetupEvent event){
+        proxy.clientSetup(event);
+    }
 
 //    @SubscribeEvent
 //    public static void entityJoined(PlayerEvent.PlayerLoggedInEvent event) {
