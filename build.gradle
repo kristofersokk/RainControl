@@ -14,13 +14,14 @@ apply plugin: 'net.minecraftforge.gradle'
 
 
 version = "${mod_version}"
-group = "com.timotheteus.raincontrol"
+group = "raincontrol"
 archivesBaseName = 'raincontrol'
 
 
 //java
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
 
 minecraft {
 //    version = "${mc_version}"
@@ -68,23 +69,6 @@ minecraft {
             }
         }
 
-        data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP,CORE'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'raincontrol', '--all', '--output', file('generated/resources/')
-
-            mods {
-                raincontrol {
-                    source sourceSets.main
-                }
-            }
-        }
     }
 }
 
@@ -142,6 +126,15 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

@@ -18,6 +18,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 //        version = ModUtil.VERSION,
 //        acceptedMinecraftVersions = "[1.12, 1.13)"
 //)
+//@Mod(value = ModUtil.MOD_ID)
 @Mod(value = ModUtil.MOD_ID)
 public class RainControl {
 
