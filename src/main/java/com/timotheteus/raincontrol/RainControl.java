@@ -1,5 +1,6 @@
 package com.timotheteus.raincontrol;
 
+import com.timotheteus.raincontrol.config.ConfigHandler;
 import com.timotheteus.raincontrol.handlers.GuiHandler;
 import com.timotheteus.raincontrol.proxy.ClientProxy;
 import com.timotheteus.raincontrol.proxy.CommonProxy;
@@ -9,6 +10,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,6 +33,7 @@ public class RainControl {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::openGui);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.spec);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

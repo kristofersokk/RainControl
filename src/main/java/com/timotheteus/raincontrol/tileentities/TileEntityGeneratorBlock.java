@@ -209,37 +209,6 @@ public class TileEntityGeneratorBlock extends TileEntityInventoryBase implements
     }
 
     @Override
-    public int getHeight() {
-        return 1;
-    }
-
-    @Override
-    public int getWidth() {
-        return 1;
-    }
-
-    @Override
-    public ITextComponent getName() {
-        return new TextComponentTranslation(Names.TE_GENERATOR);
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return getName();
-    }
-
-    @Nullable
-    @Override
-    public ITextComponent getCustomName() {
-        return null;
-    }
-
-    @Override
     public Container createContainer(EntityPlayer player) {
         return new ContainerGenerator(player.inventory, this);
     }

@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 
 version = "${mod_version}"
-group = "raincontrol"
+group = "com.timotheteus.raincontrol"
 archivesBaseName = 'raincontrol'
 
 
@@ -133,10 +133,6 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
-artifacts {
-    archives sourcesJar
-}
-
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
@@ -147,7 +143,7 @@ jar {
             "Implementation-Title": "RainControl",
             "Implementation-Version": "${version}",
             "Implementation-Vendor" :"Timotheteus",
-            "Implementation-Timestamp": new Date().format("dd-MM-yyyy'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd-y'T'HH:mm:ssZ")
         ])
     }
 }

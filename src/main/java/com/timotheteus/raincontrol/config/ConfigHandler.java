@@ -1,10 +1,6 @@
 package com.timotheteus.raincontrol.config;
 
-import com.timotheteus.raincontrol.util.ModUtil;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
 
 public class ConfigHandler {
 

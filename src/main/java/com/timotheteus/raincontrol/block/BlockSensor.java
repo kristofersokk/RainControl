@@ -2,6 +2,7 @@ package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.block.properties.RainSensorProperty;
 import com.timotheteus.raincontrol.config.ConfigHandler;
+import com.timotheteus.raincontrol.items.Items;
 import com.timotheteus.raincontrol.tileentities.TileEntitySensor;
 import com.timotheteus.raincontrol.util.Delay;
 import com.timotheteus.raincontrol.util.Names;
@@ -9,8 +10,10 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -18,7 +21,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class BlockSensor extends BlockContainerBase {
+public class BlockSensor extends BlockTileBase {
 
     private static final RainSensorProperty POWER = new RainSensorProperty();
     private static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.375D, 1.0D);
@@ -30,18 +33,14 @@ public class BlockSensor extends BlockContainerBase {
                     .hardnessAndResistance(6f, 10f)
                     .sound(SoundType.METAL),
                 Names.BLOCK_SENSOR);
-        setDefaultState(getStateFromMeta(0));
+//        setDefaultState(getDefaultState().with(POWER, 0));
         rain = new Delay(ConfigHandler.SENSOR.delay.get());
+
     }
 
     @Override
     public boolean canConnectRedstone(IBlockState state, IBlockReader world, BlockPos pos, @Nullable EnumFacing side) {
         return true;
-    }
-
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return AABB;
     }
 
     @Override
@@ -67,10 +66,6 @@ public class BlockSensor extends BlockContainerBase {
         return EnumBlockRenderType.MODEL;
     }
 
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().with(POWER, meta);
-    }
-
     public int getMetaFromState(IBlockState state) {
         return state.get(POWER);
     }
@@ -80,4 +75,14 @@ public class BlockSensor extends BlockContainerBase {
         return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 
+    @Override
+    public IItemProvider getItemDropped(IBlockState state, World worldIn, BlockPos pos, int fortune) {
+        return Items.blocksensor_item;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
+        return null;
+    }
 }

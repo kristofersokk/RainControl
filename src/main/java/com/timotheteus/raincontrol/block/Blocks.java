@@ -11,10 +11,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 
-@Mod.EventBusSubscriber
+@ObjectHolder(ModUtil.MOD_ID)
 public class Blocks {
-
-    public static Item.Properties itemBuilder;
 
     @ObjectHolder(Names.BLOCK_RAIN)
     public static BlockRain blockRain;

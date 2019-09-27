@@ -2,17 +2,15 @@ package com.timotheteus.raincontrol.util;
 
 public class Names {
 
-    public static final String RESOURCE_PREFIX = ModUtil.MOD_ID.toLowerCase() + ":";
-
     //block
-    public static final String BLOCK_RAIN = "rainblock";
-    public static final String BLOCK_GENERATOR = "generator";
-    public static final String BLOCK_SENSOR = "sensor";
+    public static final String BLOCK_RAIN = ModUtil.MOD_ID + ":rainblock";
+    public static final String BLOCK_GENERATOR = ModUtil.MOD_ID + ":generator";
+    public static final String BLOCK_SENSOR = ModUtil.MOD_ID + ":sensor";
 
     //tileentities
-    public static final String TE_RAIN = "te_rainblock";
-    public static final String TE_GENERATOR = "te_generator";
-    public static final String TE_SENSOR = "te_sensor";
+    public static final String TE_RAIN = ModUtil.MOD_ID + ":te_rainblock";
+    public static final String TE_GENERATOR = ModUtil.MOD_ID + ":te_generator";
+    public static final String TE_SENSOR = ModUtil.MOD_ID + ":te_sensor";
 
 
     //items

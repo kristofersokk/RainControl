@@ -16,16 +16,17 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import static net.minecraft.item.ItemGroup.MISC;
 
+@ObjectHolder(ModUtil.MOD_ID)
 public class Items {
 
     @ObjectHolder(Names.BLOCK_RAIN)
     public static ItemRainBlock blockRain_item;
 
     @ObjectHolder(Names.BLOCK_GENERATOR)
-    public static ItemBlockBase blockgenerator_item;
+    public static Item blockgenerator_item;
 
     @ObjectHolder(Names.BLOCK_SENSOR)
-    public static ItemBlockBase blocksensor_item;
+    public static Item blocksensor_item;
 
     @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = ModUtil.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Registration {

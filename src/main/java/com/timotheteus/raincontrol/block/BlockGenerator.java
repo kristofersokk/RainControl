@@ -1,10 +1,10 @@
 package com.timotheteus.raincontrol.block;
 
 import com.timotheteus.raincontrol.items.Items;
-import com.timotheteus.raincontrol.tileentities.IGUITile;
 import com.timotheteus.raincontrol.tileentities.TileEntityBase;
 import com.timotheteus.raincontrol.tileentities.TileEntityGeneratorBlock;
 import com.timotheteus.raincontrol.util.Names;
+import net.minecraft.block.Block.Properties;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -17,14 +17,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class BlockGenerator extends BlockContainerBase {
+public class BlockGenerator extends BlockTileBase {
 
     public BlockGenerator() {
         super(TileEntityGeneratorBlock.class,

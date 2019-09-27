@@ -4,6 +4,8 @@ import com.timotheteus.raincontrol.items.Items;
 import com.timotheteus.raincontrol.tileentities.TileEntityRainBlock;
 import com.timotheteus.raincontrol.util.KeyBindings;
 import com.timotheteus.raincontrol.util.Names;
+import net.minecraft.block.Block;
+import net.minecraft.block.Block.Properties;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -22,7 +24,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class BlockRain extends BlockTileBase{
+public class BlockRain extends BlockTileBase {
 
 	public BlockRain() {
 		super(TileEntityRainBlock.class,

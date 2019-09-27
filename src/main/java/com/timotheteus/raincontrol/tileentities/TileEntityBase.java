@@ -54,12 +54,6 @@ public abstract class TileEntityBase extends TileEntity implements ITickable {
             tick = 0;
     }
 
-    public void dropInventory(World world, BlockPos pos, TileEntityBase te) {
-        if (te instanceof Inventory) {
-            ((Inventory) te).getSlotsHandler().dropInventory(world, pos);
-        }
-    }
-
     boolean atTick(int a) {
         return Math.floorMod(tick, a) == 0;
     }
